@@ -10,12 +10,13 @@ WebSocket::WebSocket(
 	address.sin_addr.s_addr = htons(interface);
 
 	sock = socket(AF_INET, SOCK_STREAM, 0);
-	testConnection(connection);
+	testConnection(sock);
 }
 
-int				WebSocket::getSocket() { return sock; }
+int		WebSocket::getSocket() { return sock; }
 
-void			WebSocket::testConnection(int32_t item_to_test)
+void	WebSocket::testConnection(
+	int32_t item_to_test)
 {
 	if (item_to_test < 0)
 	{
