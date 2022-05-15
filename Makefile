@@ -1,4 +1,4 @@
-NAME			= Easy_find
+NAME			= WebServer
 
 DIR				= srcs
 HEADERS_DIR		= includes/
