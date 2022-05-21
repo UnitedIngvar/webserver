@@ -1,0 +1,25 @@
+name: Makefile CI
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+  workflow_dispatch:
+
+jobs:
+  build:
+
+    runs-on: macos-latest
+
+    steps:
+    - uses: actions/checkout@v3
+      
+    - name: make NAME
+      run: make
+      
+    - name: make clean
+      run: make fclean
+      
+    - name: fclean
+      run: make fclean
