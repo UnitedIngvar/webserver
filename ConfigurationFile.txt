@@ -1,0 +1,12 @@
+worker_processes 1;
+
+server {
+
+listen 80;
+
+server_name example.com www.example.com;
+
+root /var/www/example.com;
+
+index index.html;
+}
