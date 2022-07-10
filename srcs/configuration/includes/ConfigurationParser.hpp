@@ -29,12 +29,8 @@ public:
 
 	class ConfigurationFormatError : public std::exception
 	{
-	// TODO: докинуть сюда FileOperationResult
-	private:
-		std::string			_filePath;
-
 	public:
-		ConfigurationFormatError(std::string filePath);
+		ConfigurationFormatError();
 
 		virtual const char	*what() const throw();
 	};

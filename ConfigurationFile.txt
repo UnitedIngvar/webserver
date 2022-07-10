@@ -9,4 +9,6 @@ server_name example.com www.example.com;
 root /var/www/example.com;
 
 index index.html;
+
+location / { }
 }
