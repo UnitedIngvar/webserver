@@ -12,7 +12,7 @@ class Logger
 private:
 	static Logger			*_loggerPtr;
 	static pthread_mutex_t	_mutex;
-	File				_logFile;
+	File					_logFile;
 
 	Logger(std::string const &logFilePath);
 
