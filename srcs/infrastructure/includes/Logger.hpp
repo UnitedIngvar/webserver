@@ -18,7 +18,6 @@ private:
 
 	void			log(
 		std::string const &level,
-		std::string const &timestamp,
 		std::string const &message,
 		std::string const &colorCode);
 	void			writeToFile(

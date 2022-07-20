@@ -24,13 +24,16 @@ Logger::~Logger()
 
 void			Logger::log(
 		std::string const &level,
-		std::string const &timestamp,
 		std::string const &message,
 		std::string const &colorCode)
 {
+	std::time_t time = std::time(nullptr);
+	std::string currentTime = std::ctime(&time);
+	currentTime = currentTime.erase(currentTime.length() - 1, 1);
+
 	pthread_mutex_lock(&_mutex);
-	writeToTerminal(level, timestamp, message, colorCode);
-	writeToFile(level, timestamp, message);
+	writeToTerminal(level, currentTime, message, colorCode);
+	writeToFile(level, currentTime, message);
 	pthread_mutex_unlock(&_mutex);
 }
 
@@ -76,11 +79,7 @@ void			Logger::logInfo(std::string const &message)
 	const std::string logLevel = "[INFO]";
 	const std::string colorCode = GREEN;
 
-	std::time_t time = std::time(nullptr);
-	std::string currentTime = std::ctime(&time);
-	currentTime = currentTime.erase(currentTime.length() - 1, 1);
-
-	log(logLevel, currentTime, message, colorCode);
+	log(logLevel, message, colorCode);
 }
 
 void			Logger::logWarning(std::string const &message)
@@ -88,11 +87,7 @@ void			Logger::logWarning(std::string const &message)
 	const std::string logLevel = "[WARN]";
 	const std::string colorCode = YELLOW;
 
-	std::time_t time = std::time(nullptr);
-	std::string currentTime = std::ctime(&time);
-	currentTime = currentTime.erase(currentTime.length() - 1, 1);
-
-	log(logLevel, currentTime, message, colorCode);
+	log(logLevel, message, colorCode);
 }
 
 void			Logger::logError(std::string const &message)
@@ -100,11 +95,7 @@ void			Logger::logError(std::string const &message)
 	const std::string logLevel = "[ERR]";
 	const std::string colorCode = RED;
 
-	std::time_t time = std::time(nullptr);
-	std::string currentTime = std::ctime(&time);
-	currentTime = currentTime.erase(currentTime.length() - 1, 1);
-
-	log(logLevel, currentTime, message, colorCode);
+	log(logLevel, message, colorCode);
 }
 
 void			Logger::logCriticalError(std::string const &message)
@@ -112,9 +103,5 @@ void			Logger::logCriticalError(std::string const &message)
 	const std::string logLevel = "[CRIT ERR]";
 	const std::string colorCode = PURPLE;
 
-	std::time_t time = std::time(nullptr);
-	std::string currentTime = std::ctime(&time);
-	currentTime = currentTime.erase(currentTime.length() - 1, 1);
-
-	log(logLevel, currentTime, message, colorCode);
+	log(logLevel, message, colorCode);
 }
