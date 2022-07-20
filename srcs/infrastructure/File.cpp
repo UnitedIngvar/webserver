@@ -31,7 +31,7 @@ FileOperationResult	File::readFile(std::string &outContent)
 		return AccessDenied;
 	}
 
-	_stream.open(_pathToFile);
+	_stream.open(_pathToFile, std::fstream::in);
 	if (!_stream.is_open())
 	{
 		_stream.clear();
@@ -52,7 +52,7 @@ FileOperationResult	File::readFile(std::string &outContent)
 
 FileOperationResult			File::createFile()
 {
-	_stream.open(_pathToFile);
+	_stream.open(_pathToFile, std::fstream::out);
 
 	//todo: сделать проверку на возможность поиска?
 	if (_stream.is_open())
@@ -100,7 +100,7 @@ FileOperationResult			File::writeToFile(std::string content)
 		return AccessDenied;
 	}
 
-	_stream.open(_pathToFile);
+	_stream.open(_pathToFile, std::fstream::out);
 	if (!_stream.is_open())
 	{
 		_stream.clear();
