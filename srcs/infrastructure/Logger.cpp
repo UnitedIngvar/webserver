@@ -22,6 +22,18 @@ Logger::~Logger()
 	pthread_mutex_destroy(&_mutex);
 }
 
+void			Logger::log(
+		std::string const &level,
+		std::string const &timestamp,
+		std::string const &message,
+		std::string const &colorCode)
+{
+	pthread_mutex_lock(&_mutex);
+	writeToTerminal(level, timestamp, message, colorCode);
+	writeToFile(level, timestamp, message);
+	pthread_mutex_unlock(&_mutex);
+}
+
 void			Logger::writeToFile(
 	std::string const &level,
 	std::string const &timestamp,
@@ -68,10 +80,7 @@ void			Logger::logInfo(std::string const &message)
 	std::string currentTime = std::ctime(&time);
 	currentTime = currentTime.erase(currentTime.length() - 1, 1);
 
-	pthread_mutex_lock(&_mutex);
-	writeToTerminal(logLevel, currentTime, message, colorCode);
-	writeToFile(logLevel, currentTime, message);
-	pthread_mutex_unlock(&_mutex);
+	log(logLevel, currentTime, message, colorCode);
 }
 
 void			Logger::logWarning(std::string const &message)
@@ -83,10 +92,7 @@ void			Logger::logWarning(std::string const &message)
 	std::string currentTime = std::ctime(&time);
 	currentTime = currentTime.erase(currentTime.length() - 1, 1);
 
-	pthread_mutex_lock(&_mutex);
-	writeToTerminal(logLevel, currentTime, message, colorCode);
-	writeToFile(logLevel, currentTime, message);
-	pthread_mutex_unlock(&_mutex);
+	log(logLevel, currentTime, message, colorCode);
 }
 
 void			Logger::logError(std::string const &message)
@@ -98,10 +104,7 @@ void			Logger::logError(std::string const &message)
 	std::string currentTime = std::ctime(&time);
 	currentTime = currentTime.erase(currentTime.length() - 1, 1);
 
-	pthread_mutex_lock(&_mutex);
-	writeToTerminal(logLevel, currentTime, message, colorCode);
-	writeToFile(logLevel, currentTime, message);
-	pthread_mutex_unlock(&_mutex);
+	log(logLevel, currentTime, message, colorCode);
 }
 
 void			Logger::logCriticalError(std::string const &message)
@@ -113,8 +116,5 @@ void			Logger::logCriticalError(std::string const &message)
 	std::string currentTime = std::ctime(&time);
 	currentTime = currentTime.erase(currentTime.length() - 1, 1);
 
-	pthread_mutex_lock(&_mutex);
-	writeToTerminal(logLevel, currentTime, message, colorCode);
-	writeToFile(logLevel, currentTime, message);
-	pthread_mutex_unlock(&_mutex);
+	log(logLevel, currentTime, message, colorCode);
 }

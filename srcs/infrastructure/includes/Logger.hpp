@@ -16,6 +16,11 @@ private:
 
 	Logger(std::string const &logFilePath);
 
+	void			log(
+		std::string const &level,
+		std::string const &timestamp,
+		std::string const &message,
+		std::string const &colorCode);
 	void			writeToFile(
 		std::string const &level,
 		std::string const &timestamp,
