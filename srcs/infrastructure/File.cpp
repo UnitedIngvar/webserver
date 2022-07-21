@@ -50,12 +50,11 @@ FileOperationResult	File::readFile(std::string &outContent)
 	return Success;
 }
 
-FileOperationResult			File::createFile()
+FileOperationResult	File::createFile()
 {
 	_stream.open(_pathToFile, std::fstream::out);
-
 	//todo: сделать проверку на возможность поиска?
-	if (_stream.is_open())
+	if (!_stream.is_open())
 	{
 		_stream.clear();
 		return OpenFailed;
@@ -65,7 +64,7 @@ FileOperationResult			File::createFile()
 	return Success;
 }
 
-FileOperationResult			File::deleteFile()
+FileOperationResult	File::deleteFile()
 {
 	if (access(_pathToFile.c_str(), F_OK) != 0)
 	{
@@ -89,13 +88,13 @@ FileOperationResult			File::deleteFile()
 	return Success;
 }
 
-FileOperationResult			File::writeToFile(std::string content)
+FileOperationResult	File::writeToFile(std::string const &content)
 {
 	if (access(_pathToFile.c_str(), F_OK) != 0)
 	{
 		return NotFound;
 	}
-	if (access(_pathToFile.c_str(), W_OK | X_OK) != 0)
+	if (access(_pathToFile.c_str(), W_OK) != 0)
 	{
 		return AccessDenied;
 	}
@@ -112,4 +111,51 @@ FileOperationResult			File::writeToFile(std::string content)
 	_stream.clear();
 	_stream.close();
 	return Success;
+}
+
+FileOperationResult	File::appendToFile(std::string const &content)
+{
+	if (access(_pathToFile.c_str(), F_OK) != 0)
+	{
+		return NotFound;
+	}
+	if (access(_pathToFile.c_str(), W_OK) != 0)
+	{
+		return AccessDenied;
+	}
+
+	_stream.open(_pathToFile.c_str(), std::fstream::in | std::fstream::app);
+
+	if (!_stream.is_open())
+	{
+		_stream.clear();
+		return OpenFailed;
+	}
+
+	_stream << content;
+
+	_stream.clear();
+	_stream.close();
+	return Success;
+}
+
+File::FileOpenException::FileOpenException(std::string const &filePath) :
+	_filePath(filePath)
+{
+}
+
+File::FileOpenException::~FileOpenException() throw()
+{
+
+}
+
+const char	*File::FileOpenException::what() const throw()
+{
+	std::string errorMessage =
+		"error while opnening or creating a file. File path: " + _filePath + "\n";
+
+	char *errorMessageToReturn = (char *)malloc(sizeof(char) * errorMessage.length());
+	strcpy(errorMessageToReturn, errorMessage.c_str());
+
+	return errorMessageToReturn;
 }

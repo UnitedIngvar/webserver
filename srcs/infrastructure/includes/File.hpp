@@ -25,12 +25,25 @@ public:
 	File(std::string const &pathToFile);
 	~File();
 
-	std::string	getPathToFile() const;
+	std::string			getPathToFile() const;
 
-	FileOperationResult			readFile(std::string &outContent);
-	FileOperationResult			createFile();
-	FileOperationResult			deleteFile();
-	FileOperationResult			writeToFile(std::string content);
+	FileOperationResult	readFile(std::string &outContent);
+	FileOperationResult	createFile();
+	FileOperationResult	deleteFile();
+	FileOperationResult	writeToFile(std::string const &content);
+	FileOperationResult	appendToFile(std::string const &content);
+
+	class FileOpenException : public std::exception
+	{
+	private:
+		std::string			_filePath;
+
+	public:
+		FileOpenException(std::string const &filePath);
+		virtual ~FileOpenException() throw();
+
+		virtual const char	*what() const throw();
+	};
 };
 
 #endif

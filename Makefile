@@ -8,7 +8,7 @@ OBJECTS			= $(patsubst %.cpp, %.o, $(SRCS))
 D_FILES			= ${patsubst %.cpp, %.d, ${SRCS}}
 
 CC		= c++
-CFLAGS	= -std=c++98 #-Werror -Wall -Wextra
+CFLAGS	= -std=c++98 -pthread -g #-Werror -Wall -Wextra
 
 all: 	$(NAME)
 
