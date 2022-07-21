@@ -25,6 +25,7 @@ Configuration ConfigurationParser::parseConfig(std::string pathToFile)
 		throw new FileReadException(pathToFile);
 	}
 
+
 }
 
 const char	*ConfigurationParser::FileReadException::what() const throw()

@@ -9,6 +9,9 @@ server_name example.com www.example.com;
 root /var/www/example.com;
 
 index index.html;
+<<<<<<< HEAD
 
 location / { }
+=======
+>>>>>>> 69b41de ([WSV-3] added some excetptions, created the initial config parser hpp file)
 }
