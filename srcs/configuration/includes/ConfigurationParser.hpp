@@ -32,6 +32,7 @@ public:
 	public:
 		ConfigurationFormatError();
 
+<<<<<<< HEAD
 	// TODO: докинуть сюда FileOperationResult
 	private:
 		std::string			_filePath;
@@ -41,6 +42,8 @@ public:
 	public:
 		ConfigurationFormatError();
 
+=======
+>>>>>>> a5c04c0481604d72ef29b7b960db39a2b5840678
 		virtual const char	*what() const throw();
 	};
 };
