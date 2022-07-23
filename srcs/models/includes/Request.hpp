@@ -9,28 +9,25 @@ class Request
 {
 private:
 	RequestMethod						_method;
-	std::map<std::string, std::string>	_generalHeaders;
-	std::map<std::string, std::string>	_responseHeaders;
-	std::map<std::string, std::string>	_entityHeaders;
-	std::string							_path;
+	std::string							_url;
+	std::string							_httpVersion;
+	std::map<std::string, std::string>	_headers;
 	std::string							_messageBody;
 	bool								_isCgi;
 
 public:
 	Request(RequestMethod					method,
-		std::map<std::string, std::string>	generalHeaders,
-		std::map<std::string, std::string>	responseHeaders,
-		std::map<std::string, std::string>	entityHeaders,
-		std::string	const					&path,
+		std::string	const					&url,
+		std::string	const					&httpVersion,
+		std::map<std::string, std::string>	headers,
 		std::string	const					&messageBody,
 		bool								isCgi);
 	~Request();
 
 	RequestMethod						getMethod() const;
-	std::map<std::string, std::string>	getGeneralHeaders() const;
-	std::map<std::string, std::string>	getResponseHeaders() const;
-	std::map<std::string, std::string>	getEntityHeaders() const;
-	std::string							getPath() const;
+	std::string							getUrl() const;
+	std::string							getHttpVersion() const;
+	std::map<std::string, std::string>	getHeaders() const;
 	std::string							getMessageBody() const;
 	bool								getIsCgi() const;
 };

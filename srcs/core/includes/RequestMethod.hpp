@@ -1,5 +1,9 @@
-// todo: хаглушка на будущее. Доделать
+#ifndef REQUESTMETHOD_HPP
+# define REQUESTMETHOD_HPP
 
+# include <map>
+
+// todo: заглушка на будущее. Доделать
 typedef enum RequestMethod
 {
 	GET = 1,
@@ -7,3 +11,5 @@ typedef enum RequestMethod
 	PUT = 3,
 	DELETE = 4
 } RequestMethod;
+
+#endif
