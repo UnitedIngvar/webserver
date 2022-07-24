@@ -1,8 +1,6 @@
 #ifndef REQUESTMETHOD_HPP
 # define REQUESTMETHOD_HPP
 
-# include <map>
-
 // todo: заглушка на будущее. Доделать
 typedef enum RequestMethod
 {

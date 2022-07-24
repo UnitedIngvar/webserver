@@ -4,10 +4,11 @@ std::string const	&RequestFactory::getStringTillSymbol(
 	std::string const &request, int &offset, char symbol)
 {
 	int symbolPosition = request.find(symbol, offset);
+	std::string stringTillSymbol = request.substr(offset, symbolPosition - offset);
 
 	offset = symbolPosition + 1;
 
-	return request.substr(offset, symbolPosition);
+	return stringTillSymbol;
 }
 
 RequestMethod	RequestFactory::mapRequestMethod(std::string const &methodString)
@@ -30,6 +31,20 @@ RequestMethod	RequestFactory::mapRequestMethod(std::string const &methodString)
 	}
 }
 
+Url					&RequestFactory::parseUrl(std::string const &url)
+{
+	if (url.find('?') == std::string::npos)
+	{
+		path = url;
+	}
+	else
+	{
+		int urlOffset = 0;
+		path = getStringTillSymbol(url, urlOffset, '?');
+		query = getStringTillSymbol(url, urlOffset, '\0');
+	}
+}
+
 Request &RequestFactory::create(std::string const &request)
 {
 	int offset = 0;
@@ -47,6 +62,18 @@ Request &RequestFactory::create(std::string const &request)
 	url = getStringTillSymbol(request, offset, ' ');
 	httpVersion = getStringTillSymbol(request, offset, '\r\n');
 
+	/* Parse the url, search for query string */
+	if (url.find('?') == std::string::npos)
+	{
+		path = url;
+	}
+	else
+	{
+		int urlOffset = 0;
+		path = getStringTillSymbol(url, urlOffset, '?');
+		query = getStringTillSymbol(url, urlOffset, '\0');
+	}
+
 	/* Parse header fields */
 	std::map<std::string, std::string> headers;
 	while(true)
@@ -58,11 +85,13 @@ Request &RequestFactory::create(std::string const &request)
 
 	/* Parse the body, if there is one */
 	std::string body;
-	if (offset >= request.length - 1)
+	if (offset >= request.length() - 1)
 	{
 		/* skip the CRLF inbetween the header fields and body */
 		offset++;
 
 		body = getStringTillSymbol(request, offset, '\0');
 	}
+
+	Request *reqeust()
 }

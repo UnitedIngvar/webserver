@@ -4,12 +4,13 @@
 # include <string>
 # include <map>
 # include "RequestMethod.hpp"
+# include "Url.hpp"
 
 class Request
 {
 private:
 	RequestMethod						_method;
-	std::string							_url;
+	Url									_url;
 	std::string							_httpVersion;
 	std::map<std::string, std::string>	_headers;
 	std::string							_messageBody;
@@ -17,15 +18,15 @@ private:
 
 public:
 	Request(RequestMethod					method,
-		std::string	const					&url,
-		std::string	const					&httpVersion,
 		std::map<std::string, std::string>	headers,
+		Url									url,
+		std::string	const					&httpVersion,
 		std::string	const					&messageBody,
 		bool								isCgi);
 	~Request();
 
 	RequestMethod						getMethod() const;
-	std::string							getUrl() const;
+	Url									getUrl() const;
 	std::string							getHttpVersion() const;
 	std::map<std::string, std::string>	getHeaders() const;
 	std::string							getMessageBody() const;

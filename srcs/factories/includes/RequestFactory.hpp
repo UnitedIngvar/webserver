@@ -8,9 +8,9 @@
 class RequestFactory
 {
 private:
-	//static std::map<std::string, RequestMethod> _requestMethodMap;
 	static RequestMethod		mapRequestMethod(std::string const &methodString);
 	static std::string const	&getStringTillSymbol(std::string const &request, int &offset, char symbol);
+	static Url					&parseUrl(std::string const &url);
 
 public:
 	static Request				&create(std::string const &requestString);

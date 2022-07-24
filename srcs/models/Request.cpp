@@ -1,12 +1,16 @@
 #include "Request.hpp"
 
-Request::Request(RequestMethod method,
-	std::map<std::string, std::string> headers,
-	std::string const &url,
-	std::string const &messageBody,
-	bool isCgi) :
+Request::Request(
+		RequestMethod						method,
+		std::map<std::string, std::string>	headers,
+		Url									url,
+		std::string	const					&httpVersion,
+		std::string	const					&messageBody,
+		bool								isCgi) :
+	_method(method),
 	_headers(headers),
 	_url(url),
+	_httpVersion(httpVersion),
 	_messageBody(messageBody),
 	_isCgi(isCgi)
 {
