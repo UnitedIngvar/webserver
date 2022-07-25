@@ -3,7 +3,7 @@
 Request::Request(
 		RequestMethod						method,
 		std::map<std::string, std::string>	headers,
-		Url									url,
+		Url									*url,
 		std::string	const					&httpVersion,
 		std::string	const					&messageBody,
 		bool								isCgi) :

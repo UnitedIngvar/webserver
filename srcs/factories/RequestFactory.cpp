@@ -31,6 +31,35 @@ RequestMethod	RequestFactory::mapRequestMethod(std::string const &methodString)
 	}
 }
 
+std::string const	&RequestFactory::decodeUrl(std::string const &url)
+{
+	std::string decodedUrl;
+
+	for (std::string::const_iterator iter = url.begin(), nd = url.end(); iter < nd; ++iter)
+	{
+		auto currentChar = *iter;
+
+		switch(currentChar)
+		{
+			case '%':
+				if (iter[1] && iter[2])
+				{
+					char hex[]{ iter[1], iter[2] };
+					decodedUrl += static_cast<char>(strtol(hex, nullptr, 16));
+					iter += 2;
+				}
+				break;
+			case '+':
+				decodedUrl += ' ';
+				break;
+			default:
+				decodedUrl += currentChar;
+		}
+	}
+
+	return decodedUrl;
+}
+
 Url					&RequestFactory::parseUrl(std::string const &url)
 {
 	if (url.find('?') == std::string::npos)
@@ -63,6 +92,7 @@ Request &RequestFactory::create(std::string const &request)
 	httpVersion = getStringTillSymbol(request, offset, '\r\n');
 
 	/* Parse the url, search for query string */
+	url = decodeUrl(url);
 	if (url.find('?') == std::string::npos)
 	{
 		path = url;

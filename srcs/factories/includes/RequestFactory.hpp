@@ -10,6 +10,7 @@ class RequestFactory
 private:
 	static RequestMethod		mapRequestMethod(std::string const &methodString);
 	static std::string const	&getStringTillSymbol(std::string const &request, int &offset, char symbol);
+	static std::string const	&decodeUrl(std::string const &url);
 	static Url					&parseUrl(std::string const &url);
 
 public:
