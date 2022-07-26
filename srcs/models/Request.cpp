@@ -3,7 +3,7 @@
 Request::Request(
 		RequestMethod						method,
 		std::map<std::string, std::string>	headers,
-		Url									*url,
+		Url									&url,
 		std::string	const					&httpVersion,
 		std::string	const					&messageBody,
 		bool								isCgi) :
@@ -19,11 +19,11 @@ Request::Request(
 
 Request::~Request()
 {
-
+	delete &_url;
 }
 
-RequestMethod						Request::getMethod() const { return _method; }
-std::map<std::string, std::string>	Request::getHeaders() const { return _headers; }
-std::string							Request::getUrl() const { return _url; }
-std::string							Request::getMessageBody() const { return _messageBody; }
-bool								Request::getIsCgi() const { return _isCgi; }
+RequestMethod							Request::getMethod() const { return _method; }
+std::map<std::string, std::string>		const &Request::getHeaders() const { return _headers; }
+std::string								const &Request::getMessageBody() const { return _messageBody; }
+Url										const &Request::getUrl() const { return _url; }
+bool									Request::isCgi() const { return _url.getCgiExtension().length() > 0; }

@@ -60,8 +60,22 @@ std::string const	&RequestFactory::decodeUrl(std::string const &url)
 	return decodedUrl;
 }
 
-Url					&RequestFactory::parseUrl(std::string const &url)
+Url					*RequestFactory::parseUrl(std::string const &url)
 {
+	if (url.length() == 0)
+	{
+		return new Url(
+			"/",
+			"/",
+			"",
+			"");
+	}
+
+	std::string	decodedUrl = decodeUrl(url);
+	std::string	path;
+	std::string	query;
+	std::string	cgiExtension;
+
 	if (url.find('?') == std::string::npos)
 	{
 		path = url;
@@ -72,9 +86,16 @@ Url					&RequestFactory::parseUrl(std::string const &url)
 		path = getStringTillSymbol(url, urlOffset, '?');
 		query = getStringTillSymbol(url, urlOffset, '\0');
 	}
+
+	return new Url(
+		decodedUrl,
+		path,
+		query,
+		cgiExtension
+	);
 }
 
-Request &RequestFactory::create(std::string const &request)
+Request				*RequestFactory::create(std::string const &request)
 {
 	int offset = 0;
 
@@ -83,26 +104,13 @@ Request &RequestFactory::create(std::string const &request)
 	std::string		url;
 	std::string		httpVersion;
 
-	 //не забыть, что может быть кодировка % HEX HEX в URI (уточнить про другие места).
-	 // we should always replace  null abs_path with "/"
-	 // Че делать с запросом к самому серверу '*'?
 	std::string methodString = getStringTillSymbol(request, offset, ' ');
 	method = mapRequestMethod(methodString);
 	url = getStringTillSymbol(request, offset, ' ');
 	httpVersion = getStringTillSymbol(request, offset, '\r\n');
 
-	/* Parse the url, search for query string */
-	url = decodeUrl(url);
-	if (url.find('?') == std::string::npos)
-	{
-		path = url;
-	}
-	else
-	{
-		int urlOffset = 0;
-		path = getStringTillSymbol(url, urlOffset, '?');
-		query = getStringTillSymbol(url, urlOffset, '\0');
-	}
+	/* Parse the url*/
+	Url *urlModel = parseUrl(url);
 
 	/* Parse header fields */
 	std::map<std::string, std::string> headers;
@@ -113,15 +121,15 @@ Request &RequestFactory::create(std::string const &request)
 		headers.insert(std::pair<std::string, std::string>(headerName, headerValue));
 	}
 
-	/* Parse the body, if there is one */
-	std::string body;
-	if (offset >= request.length() - 1)
-	{
-		/* skip the CRLF inbetween the header fields and body */
-		offset++;
+	/* Parse the body*/
+	offset++;
+	std::string body = getStringTillSymbol(request, offset, '\0');
 
-		body = getStringTillSymbol(request, offset, '\0');
-	}
-
-	Request *reqeust()
+	return new Request(
+		method,
+		headers,
+		url,
+		httpVersion,
+		body
+	);
 }

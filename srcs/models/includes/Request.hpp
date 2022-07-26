@@ -10,7 +10,7 @@ class Request
 {
 private:
 	RequestMethod						_method;
-	Url									*_url;
+	Url									&_url;
 	std::string							_httpVersion;
 	std::map<std::string, std::string>	_headers;
 	std::string							_messageBody;
@@ -19,18 +19,18 @@ private:
 public:
 	Request(RequestMethod					method,
 		std::map<std::string, std::string>	headers,
-		Url									*url,
+		Url									&url,
 		std::string	const					&httpVersion,
 		std::string	const					&messageBody,
 		bool								isCgi);
 	~Request();
 
 	RequestMethod						getMethod() const;
-	Url									getUrl() const;
-	std::string							getHttpVersion() const;
-	std::map<std::string, std::string>	getHeaders() const;
-	std::string							getMessageBody() const;
-	bool								getIsCgi() const;
+	Url									const &getUrl() const;
+	std::string	const					const &getHttpVersion() const;
+	std::map<std::string, std::string>	const &getHeaders() const;
+	std::string	const					const &getMessageBody() const;
+	bool								isCgi() const;
 };
 
 #endif
