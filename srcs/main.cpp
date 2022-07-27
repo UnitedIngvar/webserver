@@ -1,17 +1,20 @@
 #include <string>
 #include <iostream>
+#include "RequestFactory.hpp"
 
 int main(int argc, char **argv)
 {
-	std::string str = "lol?puk";
+	std::string httpRequest;
 
-	int symbolPosition = str.find('?');
-	int offset = 0;
-	std::string substr = str.substr(offset, symbolPosition - offset);
-	offset = symbolPosition +1;
-	std::cout << substr << std::endl;
+	httpRequest + "GET /hello.htm HTTP/1.1" + "\r\n" +
+		"User-Agent: Mozilla/4.0 (compatible; MSIE5.01; Windows NT)" + "\r\n" +
+		"Host: www.tutorialspoint.com" + "\r\n" +
+		"Accept-Language: en-us" + "\r\n" +
+		"Accept-Encoding: gzip, deflate" + "\r\n" +
+		"Connection: Keep-Alive" + "\r\n" +
+		"\r\n" +
+		"Hi there, I'm body!";
 
-	symbolPosition = str.find('\0');
-	substr = str.substr(offset, symbolPosition - offset);
-	std::cout << substr << std::endl;
+	RequestFactory *fact = new RequestFactory();
+	Request *request = fact->create(httpRequest);
 }
