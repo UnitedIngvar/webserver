@@ -23,4 +23,5 @@ Request::~Request()
 RequestMethod							Request::getMethod() const { return _method; }
 std::map<std::string, std::string>		const &Request::getHeaders() const { return _headers; }
 std::string								const &Request::getMessageBody() const { return _messageBody; }
+std::string								const &Request::getHttpVersion() const { return _httpVersion; }
 Url										const &Request::getUrl() const { return _url; }

@@ -1,4 +1,5 @@
 #include "RequestFactory.hpp"
+#include <iostream>
 
 std::string		RequestFactory::getStringTillChars(
 	std::string const &request, int &offset, std::string const &chars)
@@ -113,13 +114,14 @@ Request			*RequestFactory::create(std::string const &request)
 	do
 	{
 		std::string headerName = getStringTillChars(request, offset, ":");
+		offset++;
 		std::string headerValue = getStringTillChars(request, offset, "\r\n");
 		headers.insert(std::pair<std::string, std::string>(headerName, headerValue));
 	} while (request.compare(offset, 2, "\r\n") != 0);
 
 	/* Parse the body*/
-	offset++;
-	std::string body = getStringTillChars(request, offset, "\0");
+	offset += 2;
+	std::string body = request.substr(offset);
 
 	return new Request(
 		method,
