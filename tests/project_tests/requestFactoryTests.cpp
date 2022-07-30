@@ -156,7 +156,7 @@ static void create_should_returnValidRequestModel_when_UrlHasQueryString()
     REQUIRE_EQ(request->getUrl().getPath(), path);
     REQUIRE_EQ(request->getUrl().getQuery(), query);
     REQUIRE_EQ(request->getHttpVersion(), httpVersion);
-    REQUIRE_EQ(request->getMessageBody(), body);
+    REQUIRE_EQ(request->getMessageBody(), httpVersion);
     for (size_t i = 0; i < headerList.size(); i++)
     {
         REQUIRE_EQ(request->getHeaders().at(headerList[i].first), headerList[i].second);
