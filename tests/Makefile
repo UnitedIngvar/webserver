@@ -33,6 +33,7 @@ CC		= g++
 CFLAGS	= -std=c++11 -pthread #doctest is c++11 or older compilant
 
 all: 	$(NAME)
+	./$(NAME)
 
 $(NAME): $(OBJECTS)
 		$(CC) $(CFLAGS) $(OBJECTS) -o $(NAME)

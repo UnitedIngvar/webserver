@@ -7,6 +7,7 @@ SRCS			= $(shell find $(DIR) -name *.cpp)
 OBJECTS			= $(patsubst %.cpp, %.o, $(SRCS))
 D_FILES			= ${patsubst %.cpp, %.d, ${SRCS}}
 
+TEST_DIR		= tests
 CC		= c++
 CFLAGS	= -std=c++98 -pthread -g #-Werror -Wall -Wextra
 
@@ -25,6 +26,10 @@ fclean:	clean
 		@rm -f $(NAME)
 
 re:		fclean all
+
+test:	tests/Makefile
+	$(MAKE) -C $(TEST_DIR)
+	$(MAKE) -C $(TEST_DIR) fclean
 
 include $(wildcard $(D_FILES))
 

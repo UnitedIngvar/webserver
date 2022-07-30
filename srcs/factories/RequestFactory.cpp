@@ -77,13 +77,13 @@ Url				*RequestFactory::parseUrl(std::string const &url)
 
 	if (url.find('?') == std::string::npos)
 	{
-		path = url;
+		path = decodedUrl;
 	}
 	else
 	{
 		int urlOffset = 0;
 		path = getStringTillChars(url, urlOffset, "?");
-		query = getStringTillChars(url, urlOffset, "\0");
+		query = url.substr(urlOffset);
 	}
 
 	return new Url(
