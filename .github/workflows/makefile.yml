@@ -18,8 +18,11 @@ jobs:
     - name: make NAME
       run: make
 
-    - name: make clean
+    - name: clean
       run: make fclean
 
     - name: fclean
       run: make fclean
+
+    - name: test
+      run: make test
