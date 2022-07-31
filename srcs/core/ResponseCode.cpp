@@ -24,3 +24,4 @@ ResponseCodeRepresentation	getCodeRepresentation(ResponseCode code)
 		break;
 	}
 }
+
