@@ -8,7 +8,24 @@
 class ConfigurationParser
 {
 private:
-
+	Configuration configuration;
+	typedef void (ConfigurationParser::*configParserFunc)(const std::string &line, size_t &offset, std::string &error);
+	void parseWorkerProcesses(const std::string &line, size_t &offset, std::string &error);
+	void parseListen(const std::string &line, size_t &offset, std::string &error);
+	void parseServerName(const std::string &line, size_t &offset, std::string &error);
+	void parseRoot(const std::string &line, size_t &offset, std::string &error);
+	void parseErrorPagesMap(const std::string &line, size_t &offset, std::string &error);
+	void parseRedirection(const std::string &line, size_t &offset, std::string &error);
+	void parseMaxBodySize(const std::string &line, size_t &offset, std::string &error);
+	void parseLocation(const std::string &line, size_t &offset, std::string &error);
+	void parseMethods(const std::string &line, size_t &offset, std::string &error);
+	void parseDirectory(const std::string &line, size_t &offset, std::string &error);
+	void parseIndexFile(const std::string &line, size_t &offset, std::string &error);
+	void parseCgiExtension(const std::string &line, size_t &offset, std::string &error);
+	void parseDirListOn(const std::string &line, size_t &offset, std::string &error);
+	configParserFunc *_arrayOfParseFuncs;
+	std::string *_arrayOfParseFuncsNames;
+	void parseConfigLine(const std::string &line, size_t &offset, std::string &error);
 public:
 	ConfigurationParser();
 	~ConfigurationParser();
@@ -32,7 +49,6 @@ public:
 	public:
 		ConfigurationFormatError();
 
-<<<<<<< HEAD
 	// TODO: докинуть сюда FileOperationResult
 	private:
 		std::string			_filePath;
@@ -42,8 +58,6 @@ public:
 	public:
 		ConfigurationFormatError();
 
-=======
->>>>>>> a5c04c0481604d72ef29b7b960db39a2b5840678
 		virtual const char	*what() const throw();
 	};
 };
