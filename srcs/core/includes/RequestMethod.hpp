@@ -4,6 +4,7 @@
 // todo: заглушка на будущее. Доделать
 typedef enum RequestMethod
 {
+	INVALID = 0,
 	GET = 1,
 	POST = 2,
 	PUT = 3,

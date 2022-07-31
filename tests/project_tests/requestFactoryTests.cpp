@@ -156,7 +156,7 @@ static void create_should_returnValidRequestModel_when_UrlHasQueryString()
     REQUIRE_EQ(request->getUrl().getPath(), path);
     REQUIRE_EQ(request->getUrl().getQuery(), query);
     REQUIRE_EQ(request->getHttpVersion(), httpVersion);
-    REQUIRE_EQ(request->getMessageBody(), httpVersion);
+    REQUIRE_EQ(request->getMessageBody(), body);
     for (size_t i = 0; i < headerList.size(); i++)
     {
         REQUIRE_EQ(request->getHeaders().at(headerList[i].first), headerList[i].second);
@@ -205,7 +205,7 @@ static void create_should_returnValidRequestModel_when_UrlHasEmptyQueryString()
     }
 }
 
-static void create_should_returnValidRequestModel_when_UrlPathIsEncoded()
+static void create_should_returnValidRequestModelAndDecodeTheUrl_when_urlPathIsEncoded()
 {
     // Arrange
     std::string method = "GET";
@@ -248,6 +248,135 @@ static void create_should_returnValidRequestModel_when_UrlPathIsEncoded()
     }
 }
 
+static void create_should_returnValidRequestModelWithUnemptyPath_when_urlIsEmpty()
+{
+    // Arrange
+    std::string method = "GET";
+    std::string path = "";
+    std::string expectedPath = "/";
+    std::string query = "";
+    std::string url = create_url(path, query);
+    std::string httpVersion = "HTTP/1.1";
+    auto requestLine = create_request_line(method, url, httpVersion);
+
+    std::vector<std::pair<std::string, std::string>> headerList
+    {
+        create_header_pair("User-Agent", "Mozilla/4.0 (compatible; MSIE5.01; Windows NT)"),
+        create_header_pair("Host", "www.tutorialspoint.com"),
+        create_header_pair("Accept-Language", "en-us"),
+        create_header_pair("Accept-Encoding", "gzip, deflate")
+    };
+    auto headerSection = create_header_section(headerList);
+
+    std::string body = "";
+
+    auto httpRequest = requestLine +
+		headerSection +
+        body;
+
+    // Act
+    auto *factory = new RequestFactory();
+    auto *request = factory->create(httpRequest);
+
+    // Assert
+    REQUIRE_EQ(request->getMethod(), GET);
+    REQUIRE_EQ(request->getUrl().getFullUrl(), expectedPath);
+    REQUIRE_EQ(request->getUrl().getPath(), expectedPath);
+    REQUIRE_EQ(request->getUrl().getQuery(), query);
+    REQUIRE_EQ(request->getHttpVersion(), httpVersion);
+    REQUIRE_EQ(request->getMessageBody(), body);
+    for (size_t i = 0; i < headerList.size(); i++)
+    {
+        REQUIRE_EQ(request->getHeaders().at(headerList[i].first), headerList[i].second);
+    }
+}
+
+static void create_should_returnInvalidRequestModelAndNotCrush_when_RequestMethodIsEmpty()
+{
+    // Arrange
+    std::string method = "";
+    std::string path = "";
+    std::string expectedPath = "/";
+    std::string query = "";
+    std::string url = create_url(path, query);
+    std::string httpVersion = "HTTP/1.1";
+    auto requestLine = create_request_line(method, url, httpVersion);
+
+    std::vector<std::pair<std::string, std::string>> headerList
+    {
+        create_header_pair("User-Agent", "Mozilla/4.0 (compatible; MSIE5.01; Windows NT)"),
+        create_header_pair("Host", "www.tutorialspoint.com"),
+        create_header_pair("Accept-Language", "en-us"),
+        create_header_pair("Accept-Encoding", "gzip, deflate")
+    };
+    auto headerSection = create_header_section(headerList);
+
+    std::string body = "";
+
+    auto httpRequest = requestLine +
+		headerSection +
+        body;
+
+    // Act
+    auto *factory = new RequestFactory();
+    auto *request = factory->create(httpRequest);
+
+    // Assert
+    REQUIRE_EQ(request->getMethod(), INVALID);
+    REQUIRE_EQ(request->getUrl().getFullUrl(), expectedPath);
+    REQUIRE_EQ(request->getUrl().getPath(), expectedPath);
+    REQUIRE_EQ(request->getUrl().getQuery(), query);
+    REQUIRE_EQ(request->getHttpVersion(), httpVersion);
+    REQUIRE_EQ(request->getMessageBody(), body);
+    for (size_t i = 0; i < headerList.size(); i++)
+    {
+        REQUIRE_EQ(request->getHeaders().at(headerList[i].first), headerList[i].second);
+    }
+}
+
+static void create_should_returnInvalidRequestModelAndNotCrush_when_HttpVersionIsEmpty()
+{
+    // Arrange
+    std::string method = "GET";
+    std::string path = "";
+    std::string expectedPath = "/";
+    std::string query = "";
+    std::string url = create_url(path, query);
+    std::string httpVersion = "";
+    auto requestLine = create_request_line(method, url, httpVersion);
+
+    std::vector<std::pair<std::string, std::string>> headerList
+    {
+        create_header_pair("User-Agent", "Mozilla/4.0 (compatible; MSIE5.01; Windows NT)"),
+        create_header_pair("Host", "www.tutorialspoint.com"),
+        create_header_pair("Accept-Language", "en-us"),
+        create_header_pair("Accept-Encoding", "gzip, deflate")
+    };
+    auto headerSection = create_header_section(headerList);
+
+    std::string body = "";
+
+    auto httpRequest = requestLine +
+		headerSection +
+        body;
+
+    // Act
+    auto *factory = new RequestFactory();
+    auto *request = factory->create(httpRequest);
+
+    // Assert
+    REQUIRE_EQ(request->getMethod(), GET);
+    REQUIRE_EQ(request->getUrl().getFullUrl(), expectedPath);
+    REQUIRE_EQ(request->getUrl().getPath(), expectedPath);
+    REQUIRE_EQ(request->getUrl().getQuery(), query);
+    REQUIRE_EQ(request->getHttpVersion(), httpVersion);
+    REQUIRE_EQ(request->getMessageBody(), body);
+    for (size_t i = 0; i < headerList.size(); i++)
+    {
+        REQUIRE_EQ(request->getHeaders().at(headerList[i].first), headerList[i].second);
+    }
+}
+
 void    test_reqeust_factory(void)
 {
     SUBCASE("test reqeust factory")
@@ -260,7 +389,13 @@ void    test_reqeust_factory(void)
             create_should_returnValidRequestModel_when_UrlHasQueryString();
         SUBCASE("create() should return valid request model when url has empty query string")
             create_should_returnValidRequestModel_when_UrlHasEmptyQueryString();
-        SUBCASE("create() should return valid request model when url has hexadecimal encoded chars")
-            create_should_returnValidRequestModel_when_UrlPathIsEncoded();
+        SUBCASE("create() should return valid request model and decode the url when url has hexadecimal encoded chars")
+            create_should_returnValidRequestModelAndDecodeTheUrl_when_urlPathIsEncoded();
+        SUBCASE("create() should return valid request model with unempty path when url is empty")
+            create_should_returnValidRequestModelWithUnemptyPath_when_urlIsEmpty();
+        SUBCASE("create() should return invalid request model and not crush when request method is empty")
+            create_should_returnInvalidRequestModelAndNotCrush_when_RequestMethodIsEmpty();
+        SUBCASE("create() should return invalid request model and not crush when http version is empty")
+            create_should_returnInvalidRequestModelAndNotCrush_when_RequestMethodIsEmpty();
     }
 }

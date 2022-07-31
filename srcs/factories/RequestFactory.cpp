@@ -26,9 +26,13 @@ RequestMethod	RequestFactory::mapRequestMethod(std::string const &methodString)
 	{
 		return PUT;
 	}
-	else
+	else if (methodString.compare("DELETE") == 0)
 	{
 		return DELETE;
+	}
+	else
+	{
+		return INVALID;
 	}
 }
 
