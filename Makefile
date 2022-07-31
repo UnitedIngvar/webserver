@@ -28,8 +28,8 @@ fclean:	clean
 re:		fclean all
 
 test:	tests/Makefile
-	$(MAKE) -C $(TEST_DIR) || true
-	$(MAKE) -C $(TEST_DIR) fclean -k || true
+	$(MAKE) -C $(TEST_DIR) || (ret=$$?; $(MAKE) -C $(TEST_DIR) fclean && exit $$ret)
+	$(MAKE) -C $(TEST_DIR) fclean
 
 include $(wildcard $(D_FILES))
 
