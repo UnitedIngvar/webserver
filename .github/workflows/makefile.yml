@@ -24,5 +24,12 @@ jobs:
     - name: fclean
       run: make fclean
 
+  test:
+
+    runs-on: macos-latest
+
+    steps:
+    - uses: actions/checkout@v3
+
     - name: test
       run: make test
