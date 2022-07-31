@@ -1,5 +1,18 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   requestFactoryTests.cpp                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: hcrakeha <hcrakeha@student.21-school.ru    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2022/07/31 17:06:52 by hcrakeha          #+#    #+#             */
+/*   Updated: 2022/07/31 17:44:03 by hcrakeha         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "tests.hpp"
 #include "RequestFactory.hpp"
+#include <iostream> // todo: erase
 #include <utility>
 #include <vector>
 
@@ -79,6 +92,8 @@ static void create_should_returnValidRequestModel_when_standartGetRequestIsProce
     {
         REQUIRE_EQ(request->getHeaders().at(headerList[i].first), headerList[i].second);
     }
+    delete request;
+    delete factory;
 }
 
 static void create_should_returnValidRequestModel_when_standartPostWithBodyRequestIsProcessed()
@@ -119,6 +134,8 @@ static void create_should_returnValidRequestModel_when_standartPostWithBodyReque
     {
         REQUIRE_EQ(request->getHeaders().at(headerList[i].first), headerList[i].second);
     }
+    delete request;
+    delete factory;
 }
 
 static void create_should_returnValidRequestModel_when_UrlHasQueryString()
@@ -161,6 +178,8 @@ static void create_should_returnValidRequestModel_when_UrlHasQueryString()
     {
         REQUIRE_EQ(request->getHeaders().at(headerList[i].first), headerList[i].second);
     }
+    delete request;
+    delete factory;
 }
 
 static void create_should_returnValidRequestModel_when_UrlHasEmptyQueryString()
@@ -203,6 +222,8 @@ static void create_should_returnValidRequestModel_when_UrlHasEmptyQueryString()
     {
         REQUIRE_EQ(request->getHeaders().at(headerList[i].first), headerList[i].second);
     }
+    delete request;
+    delete factory;
 }
 
 static void create_should_returnValidRequestModelAndDecodeTheUrl_when_urlPathIsEncoded()
@@ -246,6 +267,8 @@ static void create_should_returnValidRequestModelAndDecodeTheUrl_when_urlPathIsE
     {
         REQUIRE_EQ(request->getHeaders().at(headerList[i].first), headerList[i].second);
     }
+    delete request;
+    delete factory;
 }
 
 static void create_should_returnValidRequestModelWithUnemptyPath_when_urlIsEmpty()
@@ -289,9 +312,11 @@ static void create_should_returnValidRequestModelWithUnemptyPath_when_urlIsEmpty
     {
         REQUIRE_EQ(request->getHeaders().at(headerList[i].first), headerList[i].second);
     }
+    delete request;
+    delete factory;
 }
 
-static void create_should_returnInvalidRequestModelAndNotCrush_when_RequestMethodIsEmpty()
+static void create_should_returnValidRequestModelAndNotCrush_when_RequestMethodIsEmpty()
 {
     // Arrange
     std::string method = "";
@@ -332,9 +357,11 @@ static void create_should_returnInvalidRequestModelAndNotCrush_when_RequestMetho
     {
         REQUIRE_EQ(request->getHeaders().at(headerList[i].first), headerList[i].second);
     }
+    delete request;
+    delete factory;
 }
 
-static void create_should_returnInvalidRequestModelAndNotCrush_when_HttpVersionIsEmpty()
+static void create_should_returnValidRequestModelAndNotCrush_when_HttpVersionIsEmpty()
 {
     // Arrange
     std::string method = "GET";
@@ -375,6 +402,135 @@ static void create_should_returnInvalidRequestModelAndNotCrush_when_HttpVersionI
     {
         REQUIRE_EQ(request->getHeaders().at(headerList[i].first), headerList[i].second);
     }
+    delete request;
+    delete factory;
+}
+
+static void create_should_returnValidRequestModelAndNotCrush_when_headerSectionIsEmpty()
+{
+    // Arrange
+    std::string method = "GET";
+    std::string path = "/hello/world/test";
+    std::string query = "testVal=10";
+    std::string url = create_url(path, query);
+    std::string httpVersion = "HTTP/1.1";
+    auto requestLine = create_request_line(method, url, httpVersion);
+
+    auto headerSection = "\r\n";
+
+    std::string body = "There are no headers between me and request line";
+
+    auto httpRequest = requestLine +
+		headerSection +
+        "\r\n" +
+        body;
+
+    // Act
+    auto *factory = new RequestFactory();
+    auto *request = factory->create(httpRequest);
+
+    // Assert
+    REQUIRE_EQ(request->getMethod(), GET);
+    REQUIRE_EQ(request->getUrl().getFullUrl(), url);
+    REQUIRE_EQ(request->getUrl().getPath(), path);
+    REQUIRE_EQ(request->getUrl().getQuery(), query);
+    REQUIRE_EQ(request->getHttpVersion(), httpVersion);
+    REQUIRE_EQ(request->getMessageBody(), body);
+    REQUIRE_EQ(request->getHeaders().empty(), true);
+    delete request;
+    delete factory;
+}
+
+static void create_should_returnValidRequestModelAndNotCrush_when_headerSectionANDhttpVersionsAreEmpty()
+{
+    // Arrange
+    std::string method = "GET";
+    std::string path = "/hello/world/test";
+    std::string query = "testVal=10";
+    std::string url = create_url(path, query);
+    std::string httpVersion = "";
+    auto requestLine = create_request_line(method, url, httpVersion);
+
+    auto headerSection = "\r\n";
+
+    std::string body = "There are no headers between me and request line";
+
+    auto httpRequest = requestLine +
+		headerSection +
+        "\r\n" +
+        body;
+
+    // Act
+    auto *factory = new RequestFactory();
+    auto *request = factory->create(httpRequest);
+
+    // Assert
+    REQUIRE_EQ(request->getMethod(), GET);
+    REQUIRE_EQ(request->getUrl().getFullUrl(), url);
+    REQUIRE_EQ(request->getUrl().getPath(), path);
+    REQUIRE_EQ(request->getUrl().getQuery(), query);
+    REQUIRE_EQ(request->getHttpVersion(), httpVersion);
+    REQUIRE_EQ(request->getMessageBody(), body);
+    REQUIRE_EQ(request->getHeaders().empty(), true);
+    delete request;
+    delete factory;
+}
+
+static void create_should_returnValidRequestModelAndNotCrush_when_AllSectionsAreEmpty()
+{
+    // Arrange
+    std::string method = "";
+    std::string path = "";
+    std::string query = "";
+    std::string url = create_url(path, query);
+    std::string httpVersion = "";
+    auto requestLine = create_request_line(method, url, httpVersion);
+
+    auto headerSection = "\r\n";
+
+    std::string body = "";
+
+    auto httpRequest = requestLine +
+		headerSection +
+        "\r\n" +
+        body;
+
+    // Act
+    auto *factory = new RequestFactory();
+    auto *request = factory->create(httpRequest);
+
+    // Assert
+    REQUIRE_EQ(request->getMethod(), INVALID);
+    REQUIRE_EQ(request->getUrl().getFullUrl(), "/");
+    REQUIRE_EQ(request->getUrl().getPath(), "/");
+    REQUIRE_EQ(request->getUrl().getQuery(), query);
+    REQUIRE_EQ(request->getHttpVersion(), httpVersion);
+    REQUIRE_EQ(request->getMessageBody(), body);
+    REQUIRE_EQ(request->getHeaders().empty(), true);
+    delete request;
+    delete factory;
+}
+
+static void create_should_returnInvalidRequestModelAndNotCrush_when_EmptyStringIsPassed()
+{
+    // Arrange
+    auto httpRequest = "";
+
+    // Act
+    RequestFactory *factory = new RequestFactory();
+    Request *request = factory->create(httpRequest);
+
+    // Assert
+    std::string expected = "";
+    REQUIRE_EQ(request->getMethod(), INVALID);
+    REQUIRE_EQ(request->getUrl().getFullUrl(), expected);
+    REQUIRE_EQ(request->getUrl().getPath(), expected);
+    REQUIRE_EQ(request->getUrl().getQuery(), expected);
+    REQUIRE_EQ(request->getHttpVersion(), expected);
+    REQUIRE_EQ(request->getMessageBody(), expected);
+    REQUIRE_EQ(request->getHeaders().empty(), true);
+    delete request;
+    delete factory;
 }
 
 void    test_reqeust_factory(void)
@@ -393,9 +549,17 @@ void    test_reqeust_factory(void)
             create_should_returnValidRequestModelAndDecodeTheUrl_when_urlPathIsEncoded();
         SUBCASE("create() should return valid request model with unempty path when url is empty")
             create_should_returnValidRequestModelWithUnemptyPath_when_urlIsEmpty();
-        SUBCASE("create() should return invalid request model and not crush when request method is empty")
-            create_should_returnInvalidRequestModelAndNotCrush_when_RequestMethodIsEmpty();
-        SUBCASE("create() should return invalid request model and not crush when http version is empty")
-            create_should_returnInvalidRequestModelAndNotCrush_when_RequestMethodIsEmpty();
+        SUBCASE("create() should return valid request model and not crush when request method is empty")
+            create_should_returnValidRequestModelAndNotCrush_when_RequestMethodIsEmpty();
+        SUBCASE("create() should return valid request model and not crush when http version is empty")
+            create_should_returnValidRequestModelAndNotCrush_when_RequestMethodIsEmpty();
+        SUBCASE("create() should return valid request model and not crush when header section is empty")
+            create_should_returnValidRequestModelAndNotCrush_when_headerSectionIsEmpty();
+        SUBCASE("create() should return valid request model and not crush when header section and http vsrions are empty")
+            create_should_returnValidRequestModelAndNotCrush_when_headerSectionANDhttpVersionsAreEmpty();
+        SUBCASE("create() should return valid request model and not crush when all sections are empty")
+            create_should_returnValidRequestModelAndNotCrush_when_AllSectionsAreEmpty();
+        SUBCASE("create() should return valid request model and not crush when empty string is passed")
+            create_should_returnInvalidRequestModelAndNotCrush_when_EmptyStringIsPassed();
     }
 }
