@@ -1,0 +1,27 @@
+worker_processes 1;
+
+server {
+
+listen 80;
+
+server_name example.com www.example.com;
+
+root /var/www/example.com;
+
+index index.html;
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
+
+location / { }
+=======
+>>>>>>> 69b41de ([WSV-3] added some excetptions, created the initial config parser hpp file)
+=======
+
+location / { }
+>>>>>>> a5c04c0 ([WSV-3] added some excetptions, created the initial config parser hpp file)
+=======
+
+location / { }
+>>>>>>> a5c04c0481604d72ef29b7b960db39a2b5840678
+}
