@@ -14,12 +14,22 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
-      
+
     - name: make NAME
       run: make
-      
-    - name: make clean
+
+    - name: clean
       run: make fclean
-      
+
     - name: fclean
       run: make fclean
+
+  test:
+
+    runs-on: macos-latest
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: test
+      run: make test
