@@ -17,10 +17,13 @@ ResponseCodeRepresentation	getCodeRepresentation(ResponseCode code)
 		return buildRepresentation("200", "OK");
 		break;
 	case BadRequest:
-		return buildRepresentation("400", "BadRequest");;
+		return buildRepresentation("400", "Bad Request");
 		break;
-
-	default:
+	case NotImplemented:
+		return buildRepresentation("501", "Not Implemented");
+		break;
+	case HTTPVersionNotSupported:
+		return buildRepresentation("505", "HTTP Version Not Supported");
 		break;
 	}
 }
