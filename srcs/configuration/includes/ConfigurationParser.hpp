@@ -8,8 +8,14 @@
 class ConfigurationParser
 {
 private:
-	Configuration configuration;
 	typedef void (ConfigurationParser::*configParserFunc)(const std::string &line, size_t &offset, std::string &error);
+
+	Configuration configuration;
+	configParserFunc *_arrayOfParseServerFuncs;
+	std::string *_arrayOfParseServerFuncsNames;
+	configParserFunc *_arrayOfParseLocationFuncs;
+	std::string *_arrayOfParseLocationFuncsNames;
+
 	void parseWorkerProcesses(const std::string &line, size_t &offset, std::string &error);
 	void parseListen(const std::string &line, size_t &offset, std::string &error);
 	void parseServerName(const std::string &line, size_t &offset, std::string &error);
@@ -23,9 +29,9 @@ private:
 	void parseIndexFile(const std::string &line, size_t &offset, std::string &error);
 	void parseCgiExtension(const std::string &line, size_t &offset, std::string &error);
 	void parseDirListOn(const std::string &line, size_t &offset, std::string &error);
-	configParserFunc *_arrayOfParseFuncs;
-	std::string *_arrayOfParseFuncsNames;
+
 	void parseConfigLine(const std::string &line, size_t &offset, std::string &error);
+	void parseEmbeddedLine(const std::string &lines, size_t &offset, std::string &error);
 public:
 	ConfigurationParser();
 	~ConfigurationParser();
