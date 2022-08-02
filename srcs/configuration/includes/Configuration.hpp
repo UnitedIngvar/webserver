@@ -5,6 +5,7 @@
 # include "ResponseCode.hpp"
 # include <string>
 # include <map>
+# include <list>
 
 typedef struct LocationConfigurationUnit
 {
@@ -22,7 +23,7 @@ typedef struct ServerConfiguration
 	std::map<std::string, LocationConfigurationUnit>	locationMap;
 	std::map<ResponseCode, std::string>	errorPagesMap;
 	std::string	redirectionPath;
-	std::string	serverName;
+	std::list<std::string>	serverNames;
 	int	maxBodySize;
 	int	port;
 } ServerConfiguration;
