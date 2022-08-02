@@ -6,7 +6,7 @@
 /*   By: hcrakeha <hcrakeha@student.21-school.ru    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/31 17:06:52 by hcrakeha          #+#    #+#             */
-/*   Updated: 2022/07/31 17:52:26 by hcrakeha         ###   ########.fr       */
+/*   Updated: 2022/08/02 23:12:40 by hcrakeha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -534,31 +534,28 @@ static void create_should_returnInvalidRequestModelAndNotCrush_when_EmptyStringI
 
 void    test_reqeust_factory(void)
 {
-    SUBCASE("test reqeust factory")
-    {
-        SUBCASE("create() should return valid request model when standart GET request is processed")
-            create_should_returnValidRequestModel_when_standartGetRequestIsProcessed();
-        SUBCASE("create() should return valid request model when standart POST with body request is processed")
-            create_should_returnValidRequestModel_when_standartPostWithBodyRequestIsProcessed();
-        SUBCASE("create() should return valid request model when url has query string")
-            create_should_returnValidRequestModel_when_UrlHasQueryString();
-        SUBCASE("create() should return valid request model when url has empty query string")
-            create_should_returnValidRequestModel_when_UrlHasEmptyQueryString();
-        SUBCASE("create() should return valid request model and decode the url when url has hexadecimal encoded chars")
-            create_should_returnValidRequestModelAndDecodeTheUrl_when_urlPathIsEncoded();
-        SUBCASE("create() should return valid request model with unempty path when url is empty")
-            create_should_returnValidRequestModelWithUnemptyPath_when_urlIsEmpty();
-        SUBCASE("create() should return valid request model and not crush when request method is empty")
-            create_should_returnValidRequestModelAndNotCrush_when_RequestMethodIsEmpty();
-        SUBCASE("create() should return valid request model and not crush when http version is empty")
-            create_should_returnValidRequestModelAndNotCrush_when_RequestMethodIsEmpty();
-        SUBCASE("create() should return valid request model and not crush when header section is empty")
-            create_should_returnValidRequestModelAndNotCrush_when_headerSectionIsEmpty();
-        SUBCASE("create() should return valid request model and not crush when header section and http vsrions are empty")
-            create_should_returnValidRequestModelAndNotCrush_when_headerSectionANDhttpVersionsAreEmpty();
-        SUBCASE("create() should return valid request model and not crush when all sections are empty")
-            create_should_returnValidRequestModelAndNotCrush_when_AllSectionsAreEmpty();
-        SUBCASE("create() should return valid request model and not crush when empty string is passed")
-            create_should_returnInvalidRequestModelAndNotCrush_when_EmptyStringIsPassed();
-    }
+    SUBCASE("create() should return valid request model when standart GET request is processed")
+        create_should_returnValidRequestModel_when_standartGetRequestIsProcessed();
+    SUBCASE("create() should return valid request model when standart POST with body request is processed")
+        create_should_returnValidRequestModel_when_standartPostWithBodyRequestIsProcessed();
+    SUBCASE("create() should return valid request model when url has query string")
+        create_should_returnValidRequestModel_when_UrlHasQueryString();
+    SUBCASE("create() should return valid request model when url has empty query string")
+        create_should_returnValidRequestModel_when_UrlHasEmptyQueryString();
+    SUBCASE("create() should return valid request model and decode the url when url has hexadecimal encoded chars")
+        create_should_returnValidRequestModelAndDecodeTheUrl_when_urlPathIsEncoded();
+    SUBCASE("create() should return valid request model with unempty path when url is empty")
+        create_should_returnValidRequestModelWithUnemptyPath_when_urlIsEmpty();
+    SUBCASE("create() should return valid request model and not crush when request method is empty")
+        create_should_returnValidRequestModelAndNotCrush_when_RequestMethodIsEmpty();
+    SUBCASE("create() should return valid request model and not crush when http version is empty")
+        create_should_returnValidRequestModelAndNotCrush_when_RequestMethodIsEmpty();
+    SUBCASE("create() should return valid request model and not crush when header section is empty")
+        create_should_returnValidRequestModelAndNotCrush_when_headerSectionIsEmpty();
+    SUBCASE("create() should return valid request model and not crush when header section and http vsrions are empty")
+        create_should_returnValidRequestModelAndNotCrush_when_headerSectionANDhttpVersionsAreEmpty();
+    SUBCASE("create() should return valid request model and not crush when all sections are empty")
+        create_should_returnValidRequestModelAndNotCrush_when_AllSectionsAreEmpty();
+    SUBCASE("create() should return valid request model and not crush when empty string is passed")
+        create_should_returnInvalidRequestModelAndNotCrush_when_EmptyStringIsPassed();
 }
