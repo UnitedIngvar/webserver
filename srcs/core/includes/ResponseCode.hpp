@@ -9,7 +9,7 @@ typedef enum ResponseCode
 {
 	OK = 200,
 	BadRequest = 400
-} RequestMethod;
+} ResponseCode;
 
 typedef struct ResponseCodeRepresentation
 {
