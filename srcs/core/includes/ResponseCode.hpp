@@ -8,7 +8,9 @@
 typedef enum ResponseCode
 {
 	OK = 200,
-	BadRequest = 400
+	BadRequest = 400,
+	NotImplemented = 501,
+	HTTPVersionNotSupported = 505
 } ResponseCode;
 
 typedef struct ResponseCodeRepresentation
