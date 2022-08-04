@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   Configuration.hpp                                  :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: ftassada <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2022/08/04 03:11:07 by ftassada          #+#    #+#             */
+/*   Updated: 2022/08/04 03:11:07 by ftassada         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #ifndef CONFIGURATION_HPP
 # define CONFIGURATION_HPP
 
@@ -30,7 +42,7 @@ typedef struct ServerConfiguration
 
 typedef struct Configuration
 {
-	ServerConfiguration	*ServerConfigurations;
+	std::list<ServerConfiguration>ServerConfigurations;
 	int	threadPoolSize;
 } Configuration;
 

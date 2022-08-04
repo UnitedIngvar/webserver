@@ -1,54 +1,35 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   ConfigurationParser.cpp                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: ftassada <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2022/08/04 03:10:49 by ftassada          #+#    #+#             */
+/*   Updated: 2022/08/04 03:10:51 by ftassada         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "ConfigurationParser.hpp"
 #include "File.hpp"
 
 ConfigurationParser::ConfigurationParser()
 {
-	_arrayOfParseServerFuncs = new configParserFunc[7];
-	_arrayOfParseServerFuncsNames = new std::string[7];
+	_serverParseFuncs.insert(std::pair<std::string, configParserFunc>("listen", &ConfigurationParser::parseListen));
+	_serverParseFuncs.insert(std::pair<std::string, configParserFunc>("serverName", &ConfigurationParser::parseServerName));
+	_serverParseFuncs.insert(std::pair<std::string, configParserFunc>("root", &ConfigurationParser::parseRoot));
+	_serverParseFuncs.insert(std::pair<std::string, configParserFunc>("errorPagesMap", &ConfigurationParser::parseErrorPagesMap));
+	_serverParseFuncs.insert(std::pair<std::string, configParserFunc>("redirection", &ConfigurationParser::parseRedirection));
+	_serverParseFuncs.insert(std::pair<std::string, configParserFunc>("maxBodySize", &ConfigurationParser::parseMaxBodySize));
 
-	_arrayOfParseServerFuncs[0] = &ConfigurationParser::parseListen;
-	_arrayOfParseServerFuncsNames[0] = "listen";
-	_arrayOfParseServerFuncs[1] = &ConfigurationParser::parseListen;
-	_arrayOfParseServerFuncsNames[1] = "serverName";
-	_arrayOfParseServerFuncs[2] = &ConfigurationParser::parseServerName;
-	_arrayOfParseServerFuncsNames[2] = "root";
-	_arrayOfParseServerFuncs[3] = &ConfigurationParser::parseRoot;
-	_arrayOfParseServerFuncsNames[3] = "errorPagesMap";
-	_arrayOfParseServerFuncs[3] = &ConfigurationParser::parseErrorPagesMap;
-	_arrayOfParseServerFuncsNames[4] = "redirection";
-	_arrayOfParseServerFuncs[4] = &ConfigurationParser::parseRedirection;
-	_arrayOfParseServerFuncsNames[5] = "maxBodySize";
-	_arrayOfParseServerFuncs[5] = &ConfigurationParser::parseMaxBodySize;
-	_arrayOfParseServerFuncsNames[6] = "location";
+	_locationParseFuncs.insert(std::pair<std::string, configParserFunc>("methods", &ConfigurationParser::parseMethods));
+	_locationParseFuncs.insert(std::pair<std::string, configParserFunc>("directory", &ConfigurationParser::parseDirectory));
+	_locationParseFuncs.insert(std::pair<std::string, configParserFunc>("indexFile", &ConfigurationParser::parseIndexFile));
+	_locationParseFuncs.insert(std::pair<std::string, configParserFunc>("cgiExtension", &ConfigurationParser::parseCgiExtension));
+	_locationParseFuncs.insert(std::pair<std::string, configParserFunc>("dirListOn", &ConfigurationParser::parseDirListOn));
 
-	_arrayOfParseLocationFuncs = new configParserFunc[6];
-	_arrayOfParseLocationFuncsNames = new std::string[6];
-
-	_arrayOfParseLocationFuncs[6] = &ConfigurationParser::parseLocation;
-	_arrayOfParseLocationFuncsNames[7] = "methods";
-	_arrayOfParseLocationFuncs[7] = &ConfigurationParser::parseMethods;
-	_arrayOfParseLocationFuncsNames[8] = "directory";
-	_arrayOfParseLocationFuncs[8] = &ConfigurationParser::parseDirectory;
-	_arrayOfParseLocationFuncsNames[9] = "indexFile";
-	_arrayOfParseLocationFuncs[9] = &ConfigurationParser::parseIndexFile;
-	_arrayOfParseLocationFuncsNames[10] = "cgiExtension";
-	_arrayOfParseLocationFuncs[10] = &ConfigurationParser::parseCgiExtension;
-	_arrayOfParseLocationFuncsNames[11] = "dirListOn";
-	_arrayOfParseLocationFuncs[11] = &ConfigurationParser::parseDirListOn;
-
-	ServerConfiguration serverConfiguration;
-	configuration.ServerConfigurations = &serverConfiguration;
+	_serverMap.insert(std::pair<std::string, void(*)>("listen", &ConfigurationParser::parseListen));
 }
-
-ConfigurationParser::~ConfigurationParser()
-{
-	delete[] _arrayOfParseServerFuncs;
-	delete[] _arrayOfParseServerFuncsNames;
-	delete[] _arrayOfParseLocationFuncs;
-	delete[] _arrayOfParseLocationFuncsNames;
-}
-
-
 
 Configuration ConfigurationParser::parseConfig(std::string pathToFile)
 {
@@ -58,7 +39,8 @@ Configuration ConfigurationParser::parseConfig(std::string pathToFile)
 	FileOperationResult readResult = file.readFile(fileContents);
 	if (readResult != Success)
 	{
-		throw new FileReadException(pathToFile);
+		std::cerr << "could not open config file. Error: " + File::getResultStringFormat(readResult);
+		return this->configuration;
 	}
 
 	size_t i = 0;
@@ -73,69 +55,97 @@ Configuration ConfigurationParser::parseConfig(std::string pathToFile)
 		}
 		switch (fileContents[i])
 		{
-			case '\0':
-				return;
 			case '\n':
 				continue;
 			case '{':
-				parseEmbeddedLine(fileContents, i, error);
-				return;
+				parseEmbeddedLine(fileContents, left_i_saver, error);
+				i = left_i_saver;
+				break;
 			case ';':
 				parseConfigLine(fileContents.substr(left_i_saver, i - left_i_saver), i, error);
 				if (error != "")
 				{
-					throw new ConfigurationFormatError;
+					std::cout << "could not parse config line. error: " << error;
+					return this->configuration;
 				}
 		}
-		i++;
+		while (fileContents[i] && !isalnum(fileContents[i]))
+		{
+			i++;
+		}
 	}
+
+	return this->configuration;
 }
 
 void ConfigurationParser::parseConfigLine(const std::string &line, size_t &offset, std::string &error)
 {
 	int i = 0;
-	while (line[i] != ' ')
+	while (line[i] && !isspace(line[i]))
 	{
 		i++;
 	}
-	std::string name = line.substr(0, i - 1);
-	std::string lineAfterName = line.substr(i - 1, line.length() - i);
-	offset += i;
+	std::string name = line.substr(0, i);
+	std::string lineAfterName = line.substr(i, line.length());
+	std::cout << "got line <" << line << ">\n";
+	std::cout << "checkign name \"" << name << "\"\n";
 	i = 0;
 	if (name.compare("workerProcesses") == 0)
 	{
 		parseWorkerProcesses(lineAfterName, offset, error);
 		return ;
 	}
-	while (i != 7)
+	if (_serverParseFuncs.count(name) > 0)
 	{
-		if (_arrayOfParseServerFuncsNames[i].compare(name) == 0)
-		{
-			(this->*_arrayOfParseServerFuncs[i])(lineAfterName, offset, error);
-			if (error != "")
-			{
-				return ;
-			}
-		}
+
+		configParserFunc func = _serverParseFuncs.at(name);
+		(this->*func)(lineAfterName, offset, error);
 	}
-	offset += i;
+	else
+	{
+		error = "cant parse line \"" + name +"\"";
+		return ;
+	}
+	// offset += i;
 }
 
 void ConfigurationParser::parseEmbeddedLine(const std::string &lines, size_t &offset, std::string &error)
 {
-	while (lines[offset])
-}
-
-
-const char	*ConfigurationParser::FileReadException::what() const throw()
-{
-	std::string errorMessage =
-		"error while reading a file. File path: " + _filePath + "\n";
-
-	return errorMessage.c_str();
-}
-
-const char	*ConfigurationParser::ConfigurationFormatError::what() const throw()
-{
-	return "Configuration file has invalid format";
+	std::cout << "im in embedded <" << lines.substr(offset, 10) + ">\n";
+	while(lines[offset] && !isalpha(lines[offset]))
+	{
+		offset++;
+	}
+	size_t offset_saver = offset;
+	while (lines[offset] && !isspace(lines[offset]))
+	{
+		offset++;
+	}
+	std::string name = lines.substr(offset_saver, offset - offset_saver);
+	if (name.compare("server") == 0)
+	{
+		ServerConfiguration serverConfiguration = parseServerConfiguration(lines, offset, error);
+		if (error != "")
+		{
+			return ;
+		}
+		_configuration.ServerConfigurations.push_back(serverConfiguration);
+		while (!isalpha(lines[offset]))
+		{
+			offset++;
+		}
+		std::cout << "line after server <" << lines.substr(offset, 10) << std::endl;
+	}
+	else if (name.compare("errorPagesMap"))
+	{
+		parseErrorPagesMap(lines, offset, error);
+	}
+	else if (name.compare("location") == 0)
+	{
+		parseLocation(lines, offset, error);
+	}
+	else
+	{
+		error = "uknown embedded config line \"" + name + "\"";
+	}
 }

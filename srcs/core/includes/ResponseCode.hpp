@@ -8,8 +8,12 @@
 typedef enum ResponseCode
 {
 	OK = 200,
-	BadRequest = 400
-} RequestMethod;
+	BadRequest = 400,
+	PageNotFound = 404,
+	InternalServiceError = 500,
+
+	UknownCode = -1,
+} ResponseCode;
 
 typedef struct ResponseCodeRepresentation
 {
@@ -18,4 +22,6 @@ typedef struct ResponseCodeRepresentation
 } ResponseCodeRepresentation;
 
 ResponseCodeRepresentation	getCodeRepresentation(ResponseCode code);
+ResponseCode				getErrorCodeFromInteger (int code);
+
 #endif

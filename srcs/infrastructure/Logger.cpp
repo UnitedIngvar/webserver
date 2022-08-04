@@ -13,7 +13,7 @@ Logger::Logger(std::string const &logFilePath) :
 
 	if (result != Success)
 	{
-		throw new File::FileOpenException(logFilePath);
+
 	}
 }
 
