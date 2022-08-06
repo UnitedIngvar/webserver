@@ -11,6 +11,9 @@ private:
 
 public:
 	Error(
+		std::string const &message);
+
+	Error(
 		ResponseCode responseCode,
 		std::string const &message);
 

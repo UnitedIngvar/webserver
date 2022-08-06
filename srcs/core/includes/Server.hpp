@@ -19,7 +19,6 @@ private:
 	GatewayFactory		_gatewayFactory;
 	RequestFactory		_requestFactory;
 	ReuqestValidator	_requestValidator;
-	Logger				_logger;
 
 public:
 	Server(ServerConfiguration const &config);
@@ -29,3 +28,5 @@ public:
 	void		startListening(Error *error);
 	void		handleConnection(socket_fd clientConnection);
 };
+
+#endif
