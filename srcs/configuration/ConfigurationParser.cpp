@@ -43,7 +43,7 @@ Configuration ConfigurationParser::parseConfig(std::string pathToFile)
 
 	size_t i = 0;
 	size_t left_i_saver;
-	std::string error;
+	Error *error = nullptr;
 	while (fileContents[i])
 	{
 		left_i_saver = i;
@@ -57,14 +57,17 @@ Configuration ConfigurationParser::parseConfig(std::string pathToFile)
 				continue;
 			case '{':
 				parseEmbeddedLine(fileContents, left_i_saver, error);
+				if (error != nullptr)
+				{
+					throw error->getMessage();
+				}
 				i = left_i_saver;
 				break;
 			case ';':
 				parseConfigLine(fileContents.substr(left_i_saver, i - left_i_saver), i, error);
-				if (error != "")
+				if (error != nullptr)
 				{
-					std::cout << "could not parse config line. error: " << error;
-					return this->_configuration;
+					throw "could not parse config line. error: " + error->getMessage();
 				}
 		}
 		while (fileContents[i] && !isalnum(fileContents[i]))
@@ -76,7 +79,7 @@ Configuration ConfigurationParser::parseConfig(std::string pathToFile)
 	return this->_configuration;
 }
 
-void ConfigurationParser::parseConfigLine(const std::string &line, size_t &offset, std::string &error)
+void ConfigurationParser::parseConfigLine(const std::string &line, size_t &offset, Error *error)
 {
 	int i = 0;
 	while (line[i] && !isspace(line[i]))
@@ -100,13 +103,14 @@ void ConfigurationParser::parseConfigLine(const std::string &line, size_t &offse
 	}
 	else
 	{
-		error = "cant parse line \"" + name +"\"";
+		error = new Error("cant parse line \"" + name +"\"");
 		return ;
 	}
 	// offset += i;
+	
 }
 
-void ConfigurationParser::parseEmbeddedLine(const std::string &lines, size_t &offset, std::string &error)
+void ConfigurationParser::parseEmbeddedLine(const std::string &lines, size_t &offset, Error *error)
 {
 	std::cout << "im in embedded <" << lines.substr(offset, 10) + ">\n";
 	while(lines[offset] && !isalpha(lines[offset]))
@@ -121,13 +125,13 @@ void ConfigurationParser::parseEmbeddedLine(const std::string &lines, size_t &of
 	std::string name = lines.substr(offset_saver, offset - offset_saver);
 	if (name.compare("server") == 0)
 	{
-		ServerConfiguration *serverConfiguration = new ServerConfiguration();
+		ServerConfiguration serverConfiguration;
 		_configuration.ServerConfigurations.push_front(serverConfiguration);
 		std::cout << "i\n";
 		parseServerConfiguration(lines, offset, error);
-		if (error != "")
+		if (error != nullptr)
 		{
-			error = "parsing server configuration. " + error;
+			return;
 		}
 		while (lines[offset] && !isalpha(lines[offset]))
 		{
@@ -145,6 +149,6 @@ void ConfigurationParser::parseEmbeddedLine(const std::string &lines, size_t &of
 	}
 	else
 	{
-		error = "uknown embedded config line \"" + name + "\"";
+		error = new Error("uknown embedded config line \"" + name + "\"");
 	}
 }

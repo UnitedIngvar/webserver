@@ -43,7 +43,7 @@ typedef struct ServerConfiguration
 
 typedef struct Configuration
 {
-	std::list<ServerConfiguration*>ServerConfigurations;
+	std::list<ServerConfiguration>ServerConfigurations;
 	int	threadPoolSize;
 } Configuration;
 

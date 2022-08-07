@@ -19,11 +19,21 @@
 int main(int argc, char **argv)
 {
 	ConfigurationParser *parser = new ConfigurationParser();
-	Configuration config = parser->parseConfig("./srcs/configuration/config.conf");
+	Configuration config;
+	try
+	{
+		config = parser->parseConfig("./srcs/configuration/config.conf");
+	}
+	catch (std::string error)
+	{
+		std::cerr << error; 
+	}
 	delete parser;
 	std::cout << "threadPool " << config.threadPoolSize << std::endl;
 	if (config.ServerConfigurations.size() > 0)
 	{
-		std::cout << "port" << std::to_string(config.ServerConfigurations.front()->port) << std::endl;
+		std::cout << "port" << std::to_string(config.ServerConfigurations.front().port) << std::endl;
+		std::cout << "server name" << config.ServerConfigurations.front().serverNames.front() << std::endl;
+		std::cout << "server name" << config.ServerConfigurations.front().serverNames.back() << std::endl;
 	}
 }

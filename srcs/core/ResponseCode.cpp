@@ -23,6 +23,7 @@ ResponseCodeRepresentation	getCodeRepresentation(ResponseCode code)
 		return buildRepresentation("501", "Not Implemented");
 	case HTTPVersionNotSupported:
 		return buildRepresentation("505", "HTTP Version Not Supported");
+	default:
+		return buildRepresentation("-1", "Response code not found");
 	}
 }
-

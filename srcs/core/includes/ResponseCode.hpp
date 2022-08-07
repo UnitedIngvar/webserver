@@ -12,7 +12,9 @@ typedef enum ResponseCode
 	NotFound = 404,
 	InternalServiceError = 500,
 	NotImplemented = 501,
-	HTTPVersionNotSupported = 505
+	HTTPVersionNotSupported = 505,
+
+	UnknownCode = -1
 } ResponseCode;
 
 typedef struct ResponseCodeRepresentation
