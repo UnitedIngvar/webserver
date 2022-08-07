@@ -6,7 +6,7 @@
 /*   By: ftassada <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/04 03:10:49 by ftassada          #+#    #+#             */
-/*   Updated: 2022/08/04 03:10:51 by ftassada         ###   ########.fr       */
+/*   Updated: 2022/08/05 15:26:15 by ftassada         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,8 +27,6 @@ ConfigurationParser::ConfigurationParser()
 	_locationParseFuncs.insert(std::pair<std::string, configParserFunc>("indexFile", &ConfigurationParser::parseIndexFile));
 	_locationParseFuncs.insert(std::pair<std::string, configParserFunc>("cgiExtension", &ConfigurationParser::parseCgiExtension));
 	_locationParseFuncs.insert(std::pair<std::string, configParserFunc>("dirListOn", &ConfigurationParser::parseDirListOn));
-
-	_serverMap.insert(std::pair<std::string, void(*)>("listen", &ConfigurationParser::parseListen));
 }
 
 Configuration ConfigurationParser::parseConfig(std::string pathToFile)
@@ -40,7 +38,7 @@ Configuration ConfigurationParser::parseConfig(std::string pathToFile)
 	if (readResult != Success)
 	{
 		std::cerr << "could not open config file. Error: " + File::getResultStringFormat(readResult);
-		return this->configuration;
+		return this->_configuration;
 	}
 
 	size_t i = 0;
@@ -66,7 +64,7 @@ Configuration ConfigurationParser::parseConfig(std::string pathToFile)
 				if (error != "")
 				{
 					std::cout << "could not parse config line. error: " << error;
-					return this->configuration;
+					return this->_configuration;
 				}
 		}
 		while (fileContents[i] && !isalnum(fileContents[i]))
@@ -75,7 +73,7 @@ Configuration ConfigurationParser::parseConfig(std::string pathToFile)
 		}
 	}
 
-	return this->configuration;
+	return this->_configuration;
 }
 
 void ConfigurationParser::parseConfigLine(const std::string &line, size_t &offset, std::string &error)
@@ -97,7 +95,6 @@ void ConfigurationParser::parseConfigLine(const std::string &line, size_t &offse
 	}
 	if (_serverParseFuncs.count(name) > 0)
 	{
-
 		configParserFunc func = _serverParseFuncs.at(name);
 		(this->*func)(lineAfterName, offset, error);
 	}
@@ -124,13 +121,15 @@ void ConfigurationParser::parseEmbeddedLine(const std::string &lines, size_t &of
 	std::string name = lines.substr(offset_saver, offset - offset_saver);
 	if (name.compare("server") == 0)
 	{
-		ServerConfiguration serverConfiguration = parseServerConfiguration(lines, offset, error);
+		ServerConfiguration *serverConfiguration = new ServerConfiguration();
+		_configuration.ServerConfigurations.push_front(serverConfiguration);
+		std::cout << "i\n";
+		parseServerConfiguration(lines, offset, error);
 		if (error != "")
 		{
-			return ;
+			error = "parsing server configuration. " + error;
 		}
-		_configuration.ServerConfigurations.push_back(serverConfiguration);
-		while (!isalpha(lines[offset]))
+		while (lines[offset] && !isalpha(lines[offset]))
 		{
 			offset++;
 		}

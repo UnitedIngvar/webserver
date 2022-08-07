@@ -15,9 +15,8 @@ private:
 	std::map<std::string, configParserFunc> _serverParseFuncs;
 	std::map<std::string, configParserFunc> _locationParseFuncs;
 
-	ServerConfiguration parseServerConfiguration(const std::string &line, size_t &offset, std::string &error);
-
 	void parseWorkerProcesses(const std::string &line, size_t &offset, std::string &error);
+	void parseServerConfiguration(const std::string &line, size_t &offset, std::string &error);
 	void parseListen(const std::string &line, size_t &offset, std::string &error);
 	void parseServerName(const std::string &line, size_t &offset, std::string &error);
 	void parseRoot(const std::string &line, size_t &offset, std::string &error);
