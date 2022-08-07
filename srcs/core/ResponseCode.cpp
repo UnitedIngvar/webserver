@@ -15,30 +15,14 @@ ResponseCodeRepresentation	getCodeRepresentation(ResponseCode code)
 	{
 	case OK:
 		return buildRepresentation("200", "OK");
-		break;
 	case BadRequest:
-		return buildRepresentation("400", "BadRequest");;
-		break;
-	case PageNotFound:
-		return buildRepresentation("404", "NotFound");
-	default:
-		return buildRepresentation("-1", "Uknown response code");
+		return buildRepresentation("400", "Bad Request");
+	case NotFound:
+		return buildRepresentation("404", "Not Found");
+	case NotImplemented:
+		return buildRepresentation("501", "Not Implemented");
+	case HTTPVersionNotSupported:
+		return buildRepresentation("505", "HTTP Version Not Supported");
 	}
 }
 
-ResponseCode getErrorCodeFromInteger (int code)
-{
-	switch (code)
-	{
-		case 200:
-			return OK;
-		case 400:
-			return BadRequest;
-		case 404:
-			return PageNotFound;
-		case 500:
-			return InternalServiceError;
-		default:
-			return UknownCode;
-	}
-}

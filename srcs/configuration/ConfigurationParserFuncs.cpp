@@ -148,7 +148,7 @@ void ConfigurationParser::parseErrorPagesMap(const std::string &lines, size_t &o
 		std::string pathToErrorPageFile = lines.substr(offset_saver, offset - 1);
 		File file(pathToErrorPageFile);
 		FileOperationResult fileOpenResult = file.checkCanBeAccessed();
-		if (fileOpenResult == NotFound)
+		if (fileOpenResult == FileNotFound)
 		{
 			error = "could not find file with error code <" + errCodeRepresentation.number +
 			 "> Path: " + pathToErrorPageFile;

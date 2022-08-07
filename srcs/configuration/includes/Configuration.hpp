@@ -36,8 +36,9 @@ typedef struct ServerConfiguration
 	std::map<ResponseCode, std::string>	errorPagesMap;
 	std::string	redirectionPath;
 	std::list<std::string>	serverNames;
-	int	maxBodySize;
+	unsigned int	host; // IP
 	int	port;
+	int	maxBodySize;
 } ServerConfiguration;
 
 typedef struct Configuration

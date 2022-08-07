@@ -8,7 +8,7 @@
 typedef enum FileOperationResult
 {
 	Success = 1,
-	NotFound = 2,
+	FileNotFound = 2,
 	AccessDenied = 3,
 	OpenFailed = 4,
 	DeleteFailed = 5,

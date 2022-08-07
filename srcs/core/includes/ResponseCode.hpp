@@ -9,10 +9,10 @@ typedef enum ResponseCode
 {
 	OK = 200,
 	BadRequest = 400,
-	PageNotFound = 404,
+	NotFound = 404,
 	InternalServiceError = 500,
-
-	UknownCode = -1,
+	NotImplemented = 501,
+	HTTPVersionNotSupported = 505
 } ResponseCode;
 
 typedef struct ResponseCodeRepresentation
@@ -22,6 +22,5 @@ typedef struct ResponseCodeRepresentation
 } ResponseCodeRepresentation;
 
 ResponseCodeRepresentation	getCodeRepresentation(ResponseCode code);
-ResponseCode				getErrorCodeFromInteger (int code);
 
 #endif

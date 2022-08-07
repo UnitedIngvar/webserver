@@ -24,7 +24,7 @@ FileOperationResult	File::readFile(std::string &outContent)
 {
 	if (access(_pathToFile.c_str(), F_OK) != 0)
 	{
-		return NotFound;
+		return FileNotFound;
 	}
 	if (access(_pathToFile.c_str(), R_OK | X_OK) != 0)
 	{
@@ -68,7 +68,7 @@ FileOperationResult	File::deleteFile()
 {
 	if (access(_pathToFile.c_str(), F_OK) != 0)
 	{
-		return NotFound;
+		return FileNotFound;
 	}
 	if (access(_pathToFile.c_str(), W_OK | X_OK) != 0)
 	{
@@ -92,7 +92,7 @@ FileOperationResult	File::writeToFile(std::string const &content)
 {
 	if (access(_pathToFile.c_str(), F_OK) != 0)
 	{
-		return NotFound;
+		return FileNotFound;
 	}
 	if (access(_pathToFile.c_str(), W_OK) != 0)
 	{
@@ -117,7 +117,7 @@ FileOperationResult	File::appendToFile(std::string const &content)
 {
 	if (access(_pathToFile.c_str(), F_OK) != 0)
 	{
-		return NotFound;
+		return FileNotFound;
 	}
 	if (access(_pathToFile.c_str(), W_OK) != 0)
 	{
@@ -143,7 +143,7 @@ FileOperationResult File::checkCanBeAccessed()
 {
 	if (access(_pathToFile.c_str(), F_OK) != 0)
 	{
-		return NotFound;
+		return FileNotFound;
 	}
 	if (access(_pathToFile.c_str(), R_OK) != 0)
 	{
@@ -158,7 +158,7 @@ std::string File::getResultStringFormat(FileOperationResult result)
 	{
 		case Success:
 			return "Success";
-		case NotFound:
+		case FileNotFound:
 			return "Not Found";
 		case AccessDenied:
 			return "Access Denied";
