@@ -4,6 +4,7 @@
 # include "Response.hpp"
 # include "Configuration.hpp"
 
+// TODO: build response factory
 class ResponseFactory
 {
 private:

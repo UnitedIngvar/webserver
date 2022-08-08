@@ -22,4 +22,6 @@ std::string	ErrorPageGenerator::generate(Error const *error) const
 	<p>Error message: " + error->getMessage() + " </p>\n\
 	</body>\n\
 	</html>";
+
+	return errorPage;
 }

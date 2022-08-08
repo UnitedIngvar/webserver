@@ -3,6 +3,7 @@
 
 # include "Configuration.hpp"
 # include "GatewayFactory.hpp"
+# include "ErrorResponseBuilder.hpp"
 # include "RequestValidator.hpp"
 # include "RequestFactory.hpp"
 # include "Connection.hpp"
@@ -19,12 +20,14 @@ private:
 	socket_fd			_listenSocket;
 
 	// default initialization
-	GatewayFactory		_gatewayFactory;
-	RequestFactory		_requestFactory;
-	RequestValidator	_requestValidator;
-	Logger				*_logger;
+	GatewayFactory			_gatewayFactory;
+	RequestFactory			_requestFactory;
+	RequestValidator		_requestValidator;
+	Logger					*_logger;
+	ErrorResponseBuilder	_errorResponseBuilder;
 
-	void	closeConnection(Connection &connection);
+	Request	*readRequest(Connection const &clientConnection);
+	void	sendResponse(Response const *response, Connection const &connection) const;
 
 public:
 	Server(ServerConfiguration const &config);

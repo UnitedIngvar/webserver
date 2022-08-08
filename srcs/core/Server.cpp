@@ -4,13 +4,49 @@
 #include <stdlib.h>
 #include <netinet/in.h>
 
-Server::Server(ServerConfiguration const &config)
-	: _config(config)
+Server::Server(ServerConfiguration const &config) :
+	_config(config),
+	_errorResponseBuilder(config)
 {
 	_logger = Logger::getInstance();
 	if (_logger)
 	{
 		std::invalid_argument("singleton Logger is not initialized!");
+	}
+}
+
+Request	*Server::readRequest(Connection const &clientConnection)
+{
+	char buffer[RECV_SIZE] = {0};
+
+	int recieved = ::recv(clientConnection.getSocket(), buffer, RECV_SIZE - 1, 0);
+	if (recieved <= 0)
+	{
+		if (recieved == 0)
+		{
+			_logger->logInfo("Connection was closed by client");
+		}
+		if (recieved == -1)
+		{
+			_logger->logWarning("Read error, closing connection");
+		}
+		return nullptr;
+	}
+
+	std::string rawRequest(buffer, recieved);
+	return _requestFactory.create(rawRequest);
+}
+
+void	Server::sendResponse(Response const *response, Connection const &connection) const
+{
+	std::string responseString = response->toResponseString();
+	int	symbolsSent = ::send(connection.getSocket(), responseString.c_str(), responseString.size(), 0);
+
+	if (symbolsSent < responseString.size())
+	{
+		_logger->logWarning("server sent only " +
+		std::to_string(symbolsSent) + " bites out of " +
+		std::to_string(responseString.size()));
 	}
 }
 
@@ -49,60 +85,48 @@ void		Server::startListening(Error *error)
 
 void		Server::handleConnection(Connection &clientConnection)
 {
-	char buffer[RECV_SIZE] = {0};
-
-	socket_fd socket = clientConnection.getSocket();
-	int recieved = ::recv(socket, buffer, RECV_SIZE - 1, 0);
-	if (recieved <= 0)
+	Request *request = readRequest(clientConnection);
+	if (request == nullptr)
 	{
-		if (recieved == 0)
-		{
-			_logger->logInfo("Connection was closed by client");
-		}
-		if (recieved == -1)
-		{
-			_logger->logWarning("Read error, closing connection");
-		}
-		clientConnection.closeConnection();
 		return;
 	}
 
-	std::string requestStr(buffer, recieved);
-	Request *request = _requestFactory.create(requestStr);
-
-	ResponseCode responseCode;
-	if (_requestValidator.validateRequest(request, responseCode) == false)
+	Error *err = nullptr;
+	if (_requestValidator.validateRequest(request, err) == false)
 	{
 		delete request;
 		// todo: build appropriate response
 	}
 
-	Error *err = nullptr;
 	IGateway &gateway = _gatewayFactory.create(request, _config, err);
 	if (err != nullptr)
 	{
+		Response *response = _errorResponseBuilder.build(err);
+
+		sendResponse(response, clientConnection);
+		delete response;
 		delete request;
 		delete err;
-		// todo: build appropriate response
+		return;
 	}
 
 	Response *response = gateway.processRequest(request, err);
 	if (err != nullptr)
 	{
+		if (response == nullptr)
+		{
+			response = _errorResponseBuilder.build(err);
+		}
+
+		sendResponse(response, clientConnection);
+		delete response;
 		delete request;
 		delete err;
-		// todo: build appropriate response
-	}
-	std::string responseString = response->toResponseString();
-	int	symbolsSent = ::send(socket, responseString.c_str(), responseString.size(), 0);
-	if (symbolsSent < responseString.size())
-	{
-		_logger->logWarning("server sent only " +
-		std::to_string(symbolsSent) + " bites out of " +
-		std::to_string(responseString.size()));
+		return;
 	}
 
-	delete response;
-	delete request;
+	sendResponse(response, clientConnection);
 	clientConnection.closeConnection();
+	delete request;
+	delete response;
 }

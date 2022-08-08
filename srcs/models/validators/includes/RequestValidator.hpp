@@ -2,7 +2,7 @@
 # define REQUESTVALIDATOR_HPP
 
 # include "Request.hpp"
-# include "ResponseCode.hpp"
+# include "Error.hpp"
 
 class RequestValidator
 {
@@ -10,7 +10,7 @@ private:
 	bool	requiredFieldIsEmpty(Request const *request);
 
 public:
-	bool	validateRequest(Request const *request, ResponseCode &errorCode);
+	bool	validateRequest(Request const *request, Error *error);
 };
 
 #endif
