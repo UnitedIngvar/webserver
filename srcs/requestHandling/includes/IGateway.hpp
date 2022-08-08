@@ -8,7 +8,7 @@
 class IGateway
 {
 public:
-	Response	const &processRequest(Request const *request, Error const *err) const;
+	virtual Response	*processRequest(Request const *request, Error const *err) const = 0;
 };
 
 #endif

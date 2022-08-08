@@ -8,6 +8,13 @@ Error::Error(
 }
 
 Error::Error(
+	ResponseCode responseCode) :
+	_responseCode(responseCode)
+{
+
+}
+
+Error::Error(
 	ResponseCode responseCode,
 	std::string const &message) :
 	_responseCode(responseCode),

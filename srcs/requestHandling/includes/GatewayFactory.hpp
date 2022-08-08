@@ -13,7 +13,7 @@ public:
 	GatewayFactory();
 	~GatewayFactory();
 
-	IGateway	create(
+	IGateway	&create(
 		Request const *request,
 		ServerConfiguration ServerConfiguration,
 		Error *error);

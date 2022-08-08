@@ -10,7 +10,7 @@ GatewayFactory::~GatewayFactory()
 
 }
 
-IGateway	GatewayFactory::create(
+IGateway	&GatewayFactory::create(
 	Request const *request,
 	ServerConfiguration ServerConfiguration,
 	Error *error)

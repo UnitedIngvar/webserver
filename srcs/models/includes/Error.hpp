@@ -14,6 +14,9 @@ public:
 		std::string const &message);
 
 	Error(
+		ResponseCode responseCode);
+
+	Error(
 		ResponseCode responseCode,
 		std::string const &message);
 

@@ -5,8 +5,11 @@
 # include "GatewayFactory.hpp"
 # include "RequestValidator.hpp"
 # include "RequestFactory.hpp"
+# include "Connection.hpp"
 # include "Logger.hpp"
 # include "Core.hpp"
+
+# define RECV_SIZE 65536
 
 class Server
 {
@@ -18,7 +21,10 @@ private:
 	// default initialization
 	GatewayFactory		_gatewayFactory;
 	RequestFactory		_requestFactory;
-	ReuqestValidator	_requestValidator;
+	RequestValidator	_requestValidator;
+	Logger				*_logger;
+
+	void	closeConnection(Connection &connection);
 
 public:
 	Server(ServerConfiguration const &config);
@@ -26,7 +32,7 @@ public:
 	socket_fd	getListenSocket() const;
 
 	void		startListening(Error *error);
-	void		handleConnection(socket_fd clientConnection);
+	void		handleConnection(Connection &clientConnection);
 };
 
 #endif
