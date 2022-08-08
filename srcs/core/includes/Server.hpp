@@ -35,6 +35,7 @@ public:
 	socket_fd	getListenSocket() const;
 
 	void		startListening(Error *error);
+	void		stopListening(Error *error);
 	void		handleConnection(Connection &clientConnection);
 };
 

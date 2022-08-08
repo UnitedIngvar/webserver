@@ -94,8 +94,10 @@ void		Server::handleConnection(Connection &clientConnection)
 	Error *err = nullptr;
 	if (_requestValidator.validateRequest(request, err) == false)
 	{
+		Response *response = _errorResponseBuilder.build(err);
+
+		sendResponse(response, clientConnection);
 		delete request;
-		// todo: build appropriate response
 	}
 
 	IGateway &gateway = _gatewayFactory.create(request, _config, err);
