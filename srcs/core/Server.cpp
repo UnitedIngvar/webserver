@@ -83,6 +83,14 @@ void		Server::startListening(Error *error)
 	}
 }
 
+void		Server::stopListening(Error *error)
+{
+	if (close(_listenSocket) != 0)
+	{
+		error = new Error("unable to close socket");
+	}
+}
+
 void		Server::handleConnection(Connection &clientConnection)
 {
 	Request *request = readRequest(clientConnection);
