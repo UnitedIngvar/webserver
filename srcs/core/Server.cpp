@@ -4,6 +4,10 @@
 #include <stdlib.h>
 #include <netinet/in.h>
 
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+// CONSTRUCTOR / DESTRUCTOR
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+
 Server::Server(ServerConfiguration const &config) :
 	_config(config),
 	_errorResponseBuilder(config)
@@ -14,6 +18,17 @@ Server::Server(ServerConfiguration const &config) :
 		std::invalid_argument("singleton Logger is not initialized!");
 	}
 }
+
+
+Server::~Server()
+{
+
+}
+
+
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+// PRIVATE MEMBER FUNCIONS
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 
 Request	*Server::readRequest(Connection const &clientConnection)
 {
@@ -37,6 +52,7 @@ Request	*Server::readRequest(Connection const &clientConnection)
 	return _requestFactory.create(rawRequest);
 }
 
+
 void	Server::sendResponse(Response const *response, Connection const &connection) const
 {
 	std::string responseString = response->toResponseString();
@@ -50,7 +66,17 @@ void	Server::sendResponse(Response const *response, Connection const &connection
 	}
 }
 
+
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+// ACCESS MEMBER FUNCIONS
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+
 socket_fd	Server::getListenSocket() const { return _listenSocket; }
+
+
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+// PUBLIC MEMBER FUNCIONS
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 
 void		Server::startListening(Error *error)
 {
@@ -62,6 +88,8 @@ void		Server::startListening(Error *error)
 		error = new Error(
 			"Error while creating socket for " +
 			std::to_string(_config.host) + ":" + std::to_string(_config.port));
+
+		return;
 	}
 
 	address.sin_family = AF_INET;
@@ -75,13 +103,17 @@ void		Server::startListening(Error *error)
 		error = new Error(
 			"Error while binding socket " + std::to_string(_listenSocket) + " to " +
 			std::to_string(_config.host) + ":" + std::to_string(_config.port));
+
+		return;
 	}
+
 	if (listen(_listenSocket, 10) < 0)
 	{
 		error = new Error(
 			"Error while making socket " + std::to_string(_listenSocket) + " a listening socket");
 	}
 }
+
 
 void		Server::stopListening(Error *error)
 {
@@ -90,6 +122,7 @@ void		Server::stopListening(Error *error)
 		error = new Error("unable to close socket");
 	}
 }
+
 
 void		Server::handleConnection(Connection &clientConnection)
 {

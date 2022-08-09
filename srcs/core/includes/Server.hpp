@@ -31,6 +31,7 @@ private:
 
 public:
 	Server(ServerConfiguration const &config);
+	~Server();
 
 	socket_fd	getListenSocket() const;
 
