@@ -23,5 +23,12 @@ Error::Error(
 
 }
 
+Error::Error(
+	std::string const &message) :
+	_message(message)
+{
+
+}
+
 ResponseCode	Error::getResponseCode() const { return _responseCode; }
 std::string		const &Error::getMessage() const { return _message; }

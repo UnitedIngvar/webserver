@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   Configuration.hpp                                  :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: ftassada <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2022/08/04 03:11:07 by ftassada          #+#    #+#             */
+/*   Updated: 2022/08/04 13:42:01 by ftassada         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #ifndef CONFIGURATION_HPP
 # define CONFIGURATION_HPP
 
@@ -5,6 +17,7 @@
 # include "ResponseCode.hpp"
 # include <string>
 # include <map>
+# include <list>
 
 typedef struct LocationConfigurationUnit
 {
@@ -22,7 +35,7 @@ typedef struct ServerConfiguration
 	std::map<std::string, LocationConfigurationUnit>	locationMap;
 	std::map<ResponseCode, std::string>	errorPagesMap;
 	std::string	redirectionPath;
-	std::string	serverName;
+	std::list<std::string>	serverNames;
 	unsigned int	host; // IP
 	int	port;
 	int	maxBodySize;
@@ -30,7 +43,7 @@ typedef struct ServerConfiguration
 
 typedef struct Configuration
 {
-	ServerConfiguration	*ServerConfigurations;
+	std::list<ServerConfiguration>ServerConfigurations;
 	int	threadPoolSize;
 } Configuration;
 

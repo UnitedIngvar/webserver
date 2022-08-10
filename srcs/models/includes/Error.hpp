@@ -20,6 +20,9 @@ public:
 		ResponseCode responseCode,
 		std::string const &message);
 
+	Error(
+		std::string const &message);
+
 	ResponseCode	getResponseCode() const;
 	std::string		const &getMessage() const;
 };

@@ -24,7 +24,7 @@ FileOperationResult	File::readFile(std::string &outContent)
 {
 	if (access(_pathToFile.c_str(), F_OK) != 0)
 	{
-		return NotFound;
+		return FileNotFound;
 	}
 	if (access(_pathToFile.c_str(), R_OK | X_OK) != 0)
 	{
@@ -68,7 +68,7 @@ FileOperationResult	File::deleteFile()
 {
 	if (access(_pathToFile.c_str(), F_OK) != 0)
 	{
-		return NotFound;
+		return FileNotFound;
 	}
 	if (access(_pathToFile.c_str(), W_OK | X_OK) != 0)
 	{
@@ -92,7 +92,7 @@ FileOperationResult	File::writeToFile(std::string const &content)
 {
 	if (access(_pathToFile.c_str(), F_OK) != 0)
 	{
-		return NotFound;
+		return FileNotFound;
 	}
 	if (access(_pathToFile.c_str(), W_OK) != 0)
 	{
@@ -117,7 +117,7 @@ FileOperationResult	File::appendToFile(std::string const &content)
 {
 	if (access(_pathToFile.c_str(), F_OK) != 0)
 	{
-		return NotFound;
+		return FileNotFound;
 	}
 	if (access(_pathToFile.c_str(), W_OK) != 0)
 	{
@@ -139,23 +139,36 @@ FileOperationResult	File::appendToFile(std::string const &content)
 	return Success;
 }
 
-File::FileOpenException::FileOpenException(std::string const &filePath) :
-	_filePath(filePath)
+FileOperationResult File::checkCanBeAccessed()
 {
+	if (access(_pathToFile.c_str(), F_OK) != 0)
+	{
+		return FileNotFound;
+	}
+	if (access(_pathToFile.c_str(), R_OK) != 0)
+	{
+		return AccessDenied;
+	}
+	return Success;
 }
 
-File::FileOpenException::~FileOpenException() throw()
+std::string File::getResultStringFormat(FileOperationResult result)
 {
-
-}
-
-const char	*File::FileOpenException::what() const throw()
-{
-	std::string errorMessage =
-		"error while opnening or creating a file. File path: " + _filePath + "\n";
-
-	char *errorMessageToReturn = (char *)malloc(sizeof(char) * errorMessage.length());
-	strcpy(errorMessageToReturn, errorMessage.c_str());
-
-	return errorMessageToReturn;
+	switch (result)
+	{
+		case Success:
+			return "Success";
+		case FileNotFound:
+			return "Not Found";
+		case AccessDenied:
+			return "Access Denied";
+		case OpenFailed:
+			return "Open Failed";
+		case DeleteFailed:
+			return "Delete Failed";
+		case DeletePostponed:
+			return "Delete Postponed";
+		default:
+			return "Unknown result code";
+	}
 }
