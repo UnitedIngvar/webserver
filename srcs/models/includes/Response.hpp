@@ -8,9 +8,7 @@ class Response
 {
 private:
 	ResponseCode						_responseCode;
-	std::map<std::string, std::string>	_generalHeaders;
-	std::map<std::string, std::string>	_responseHeaders;
-	std::map<std::string, std::string>	_entityHeaders;
+	std::map<std::string, std::string>	_headers;
 	std::string							_body;
 
 	std::string							mapToHeaderFormatString(std::map<std::string, std::string> map) const;
@@ -19,9 +17,7 @@ private:
 public:
 	Response(
 		ResponseCode						responseCode,
-		std::map<std::string, std::string>	generalHeaders,
-		std::map<std::string, std::string>	responseHeaders,
-		std::map<std::string, std::string>	entityHeaders,
+		std::map<std::string, std::string>	headers,
 		std::string	const					&body);
 	~Response();
 

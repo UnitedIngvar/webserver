@@ -9,35 +9,35 @@ bool	RequestValidator::requiredFieldIsEmpty(Request const *request)
 		request->getUrl().getPath().length() == 0;
 }
 
-bool	RequestValidator::validateRequest(Request const *request, ResponseCode &errorCode)
+bool	RequestValidator::validateRequest(Request const *request, Error *error)
 {
 	if (request == nullptr)
 	{
-		errorCode = BadRequest;
+		error = new Error(BadRequest);
 		return false;
 	}
 
 	if (requiredFieldIsEmpty(request))
 	{
-		errorCode = BadRequest;
+		error = new Error(BadRequest);
 		return false;
 	}
 
 	if (request->getMethod() == INVALID)
 	{
-		errorCode = NotImplemented;
+		error = new Error(NotImplemented);
 		return false;
 	}
 
 	if (request->getHeaders().count("Host") != 1)
 	{
-		errorCode = BadRequest;
+		error = new Error(BadRequest);
 		return false;
 	}
 
 	if (request->getHttpVersion().compare("HTTP/1.1") != 0)
 	{
-		errorCode = HTTPVersionNotSupported;
+		error = new Error(HTTPVersionNotSupported);
 		return false;
 	}
 

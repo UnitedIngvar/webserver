@@ -34,6 +34,7 @@ public:
 	~Logger();
 
 	static Logger	*getInstance(std::string const &logFilePath);
+	static Logger	*getInstance();
 
 	void			logInfo(std::string const &message);
 	void			logWarning(std::string const &message);

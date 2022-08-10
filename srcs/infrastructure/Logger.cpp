@@ -74,6 +74,11 @@ Logger	*Logger::getInstance(std::string const &pathToFile)
 	return _loggerPtr;
 }
 
+Logger	*Logger::getInstance()
+{
+	return _loggerPtr;
+}
+
 void			Logger::logInfo(std::string const &message)
 {
 	const std::string logLevel = "[INFO]";

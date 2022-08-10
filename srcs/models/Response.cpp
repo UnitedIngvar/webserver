@@ -2,14 +2,10 @@
 
 Response::Response(
 	ResponseCode responseCode,
-	std::map<std::string, std::string> generalHeaders,
-	std::map<std::string, std::string> responseHeaders,
-	std::map<std::string, std::string> entityHeaders,
+	std::map<std::string, std::string> headers,
 	std::string const &body) :
 	_responseCode(responseCode),
-	_generalHeaders(generalHeaders),
-	_responseHeaders(responseHeaders),
-	_entityHeaders(entityHeaders),
+	_headers(headers),
 	_body(body)
 {
 
@@ -33,16 +29,14 @@ std::string		Response::toResponseString() const
 		codeRepresentation.phrase
 		+ "\n";
 
-	std::string headers = mapToHeaderFormatString(_generalHeaders)
-		.append(mapToHeaderFormatString(_responseHeaders))
-		.append(mapToHeaderFormatString(_entityHeaders));
+	std::string headers = mapToHeaderFormatString(_headers);
 
 	return statusLine + headers + "\n" + _body;
 }
 
 std::string		Response::mapToHeaderFormatString(std::map<std::string, std::string> map) const
 {
-	std::string result;
+	std::string result = "";
 	for (std::map<std::string, std::string>::iterator it = map.begin(); it != map.end(); it++)
 	{
 		result.append(it->first);
